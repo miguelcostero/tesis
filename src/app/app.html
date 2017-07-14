@@ -7,9 +7,15 @@
 
   <ion-content>
     <ion-list>
+      <img src="{{ empladoLogged?.img_perfil }}" ion-item profile-photo>
+      <ion-list-header color="light">
+        Bienvenid@ {{ empladoLogged?.nombre }} {{ empladoLogged?.apellido }}
+      </ion-list-header>
       <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
         {{p.title}}
       </button>
+      <button [hidden]="!isAdmin" menuClose ion-item (click)="openPage(empleadosPage)">{{ empleadosPage.title }}</button>      
+      <button menuClose ion-item (click)="logout()">Cerrar sesión</button>
     </ion-list>
   </ion-content>
 

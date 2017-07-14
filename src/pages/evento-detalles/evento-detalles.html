@@ -1,0 +1,82 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title>Detalles del evento</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+  <ion-list *ngFor="let e of evento">
+    <ion-list-header color="gris">
+      Datos básicos
+    </ion-list-header>
+    <ion-item>
+      {{ e.nombre }}
+    </ion-item>
+    <ion-item>
+      {{ e.descripcion }}
+    </ion-item>
+    <ion-item>
+      {{ e.invitados }} invitados
+    </ion-item>
+
+    <ion-list-header color="gris">
+      Estado del evento
+    </ion-list-header>
+    <ion-item>
+      {{ e.estado_evento.nombre }}
+    </ion-item>
+
+    <ion-list-header color="gris">
+      Cliente
+    </ion-list-header>
+    <ion-item>
+      {{ e.cliente.dni }}
+    </ion-item>
+    <ion-item>
+      {{ e.cliente.nombre }}
+    </ion-item>
+    <ion-item text-wrap>
+      {{ e.cliente.direccion }}
+    </ion-item>
+    <ion-item>
+      {{ e.cliente.email }}
+    </ion-item>
+    <ion-item *ngFor="let telefono of e.cliente.telefonos" (press)="call(telefono)">
+      {{ telefono | telefono }}
+    </ion-item>
+
+    <ion-list-header color="gris" [hidden]="!e.cronograma">
+      Cronograma
+    </ion-list-header>
+    <ion-item *ngFor="let eIn of e.cronograma">
+      <h3>{{ eIn.descripcion }}</h3>
+      <h4>{{ eIn.fecha | date:'d MMM y' }} a las {{ eIn.hora | time }}</h4>
+    </ion-item>
+
+    <ion-list-header color="gris">
+      Locación
+    </ion-list-header>
+    <ion-item>
+      {{ e.locacion.nombre }}
+    </ion-item>
+    <ion-item text-wrap>
+      {{ e.locacion.direccion }}
+    </ion-item>
+    <ion-item>
+      Capacidad máxima de {{ e.locacion.capacidad }} invitados
+    </ion-item>
+    <ion-item *ngFor="let telefono of e.locacion.telefonos" (press)="call(telefono)">
+      {{ telefono | telefono }}
+    </ion-item>
+
+    <ion-list-header color="gris">
+      Creado por
+    </ion-list-header>
+    <ion-item text-wrap>
+      {{ e.empleado.nombre }} {{ e.empleado.apellido }} ({{ e.empleado.email }}) <br>
+      {{ e.fecha_agregado | date:'d MMM y, hh:mm:ss a' }}
+    </ion-item>
+  </ion-list>
+</ion-content>

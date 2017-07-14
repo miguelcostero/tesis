@@ -1,34 +1,112 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { BrowserModule } from '@angular/platform-browser'
+import { ErrorHandler, NgModule } from '@angular/core'
+import { FormsModule, ReactiveFormsModule }   from '@angular/forms'
+import { HttpModule } from '@angular/http'
+import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular'
+import { IonicStorageModule } from '@ionic/storage'
+import { CallNumber } from '@ionic-native/call-number'
 
-import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
+import { MyApp } from './app.component'
+import { HomePage } from '../pages/home/home'
+import { LoginPage } from '../pages/login/login'
+import { ResetPasswordPage } from '../pages/reset-password/reset-password'
+import { EmpleadosPage } from '../pages/empleados/empleados'
+import { ClientesPage } from '../pages/clientes/clientes'
+import { LocacionesPage } from '../pages/locaciones/locaciones'
+import { TalentosPage } from '../pages/talentos/talentos'
+import { PerfilPage } from '../pages/perfil/perfil'
+import { EventoDetallesPage } from '../pages/evento-detalles/evento-detalles'
+import { CrearEventoPage } from '../pages/crear-evento/crear-evento'
+import { EditarEventoPage } from '../pages/editar-evento/editar-evento'
 
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar'
+import { SplashScreen } from '@ionic-native/splash-screen'
+import { Toast } from '@ionic-native/toast'
+import { HeaderColor } from '@ionic-native/header-color'
+
+import { AuthProvider } from '../providers/auth/auth'
+import { PerfilProvider } from '../providers/perfil/perfil'
+import { EventosProvider } from '../providers/eventos/eventos'
+import { ModalCronogramaEventoComponent } from '../components/modal-cronograma-evento/modal-cronograma-evento'
+import { TelefonoPipe } from '../pipes/telefono/telefono'
+import { TimePipe } from '../pipes/time/time'
+import { ResetPasswordProvider } from '../providers/reset-password/reset-password'
+import { SeleccionarEstadoEventoComponent } from '../components/seleccionar-estado-evento/seleccionar-estado-evento'
+import { SeleccionarLocacionEventoComponent } from '../components/seleccionar-locacion-evento/seleccionar-locacion-evento'
+import { SeleccionarClienteEventoComponent } from '../components/seleccionar-cliente-evento/seleccionar-cliente-evento'
+import { SeleccionarTipoEventoComponent } from '../components/seleccionar-tipo-evento/seleccionar-tipo-evento'
+import { ClientesProvider } from '../providers/clientes/clientes';
+import { TipoEventoProvider } from '../providers/tipo-evento/tipo-evento';
+import { EstadoEventoProvider } from '../providers/estado-evento/estado-evento';
+import { LocacionesProvider } from '../providers/locaciones/locaciones';
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    ListPage
+    LoginPage,
+    ResetPasswordPage,
+    ClientesPage,
+    LocacionesPage,
+    TalentosPage,
+    EmpleadosPage,
+    PerfilPage,
+    EventoDetallesPage,
+    CrearEventoPage,
+    EditarEventoPage,
+    ModalCronogramaEventoComponent,
+    TelefonoPipe,
+    TimePipe,
+    SeleccionarEstadoEventoComponent,
+    SeleccionarLocacionEventoComponent,
+    SeleccionarClienteEventoComponent,
+    SeleccionarTipoEventoComponent
   ],
   imports: [
     BrowserModule,
+    HttpModule,
+    FormsModule,
+    ReactiveFormsModule,
     IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot({
+      name: '__tp'
+    })
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     HomePage,
-    ListPage
+    LoginPage,
+    ResetPasswordPage,
+    ClientesPage,
+    LocacionesPage,
+    TalentosPage,
+    EmpleadosPage,
+    PerfilPage,
+    EventoDetallesPage,
+    CrearEventoPage,
+    EditarEventoPage,
+    ModalCronogramaEventoComponent,
+    SeleccionarEstadoEventoComponent,
+    SeleccionarLocacionEventoComponent,
+    SeleccionarClienteEventoComponent,
+    SeleccionarTipoEventoComponent
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    Toast,
+    HeaderColor,
+    CallNumber,
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    AuthProvider,
+    PerfilProvider,
+    EventosProvider,
+    ResetPasswordProvider,
+    ClientesProvider,
+    TipoEventoProvider,
+    EstadoEventoProvider,
+    LocacionesProvider
   ]
 })
 export class AppModule {}

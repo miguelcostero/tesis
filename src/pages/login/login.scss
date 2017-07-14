@@ -1,0 +1,35 @@
+page-login {
+
+  div.logo {
+    width: 80%;
+    margin: 8px auto;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  form {
+    margin-top: 15px;
+  }
+
+  ion-item {
+    padding-left: 0px !important;
+  }
+
+  .item-block:first-child {
+    border-top: 0 !important;
+  }
+
+  .error-message {
+    color: red;
+    display: block;
+    max-width: 100%;
+    word-wrap: break-word;
+  }
+
+  .error-message .item-inner {
+    border-bottom: 0 !important;
+  }
+
+}

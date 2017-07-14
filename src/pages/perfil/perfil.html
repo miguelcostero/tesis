@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Perfil</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <h2>Modificar perfil</h2>
+  <img [src]="empleado?.img_perfil">  
+  <ion-list>
+    <ion-item>
+      <ion-label floating>Correo electrónico</ion-label>
+      <ion-input type="email"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Contraseña</ion-label>
+      <ion-input type="password"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Nombre</ion-label>
+      <ion-input type="text" ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Apellido</ion-label>
+      <ion-input type="text" ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Fecha de nacimiento</ion-label>
+      <ion-datetime displayFormat="YYYY/MM/DD" [(ngModel)]="fecha_nacimiento"></ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Imagen de perfil</ion-label>
+      <ion-input type="url" ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      {{ empleado | json }}
+    </ion-item>
+  </ion-list>
+</ion-content>

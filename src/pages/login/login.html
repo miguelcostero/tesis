@@ -1,0 +1,42 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title>Iniciar sesión</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <div class="logo">
+    <img src="assets/img/logo.jpg" class="logo">
+  </div>
+
+  <form (ngSubmit)="login(loginForm.value, loginForm.valid)" [formGroup]="loginForm" novalidate>
+    <ion-list>
+
+      <ion-item>
+        <ion-label stacked>Correo electrónico</ion-label>
+        <ion-input type="email" formControlName="email" name="email"  placeholder="ejemplo@ejemplo.com" required></ion-input>
+      </ion-item>
+      <ion-item class="error-message" text-wrap [hidden]="loginForm.controls.email.valid || (loginForm.controls.email.pristine && !submitted)">
+        Ingrese una dirección de correo electrónico válida
+      </ion-item>
+
+      <ion-item>
+        <ion-label stacked>Contaseña</ion-label>
+        <ion-input type="password" formControlName="password" name="password" placeholder="************" required></ion-input>
+      </ion-item>
+      <ion-item class="error-message" text-wrap [hidden]="loginForm.controls.password.valid || (loginForm.controls.password.pristine && !submitted)">
+        Ingrese una contraseña válida (Mínimo 6 caracteres)
+      </ion-item>
+
+      <br>
+      <button ion-button color="primary" type="submit" block>Iniciar sesión</button>
+
+    </ion-list>
+  </form>
+
+  <a ion-button block clear (click)="goToResetPassword()">He olvidado mi contraseña</a>  
+
+</ion-content>

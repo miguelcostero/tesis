@@ -1,18 +1,50 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Home</ion-title>
+    <ion-title>TP Agenda</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <h3>Ionic Menu Starter</h3>
+<ion-fab right bottom>
+  <button ion-fab color="primary" (click)="goCrearNuevoEvento()">
+    <ion-icon name="add"></ion-icon>
+  </button>
+</ion-fab>
 
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will show you the way.
-  </p>
+<ion-content>
+  <ion-searchbar (ionInput)="getEventos($event)" (ionCancel)="onCancelEventos($event)"></ion-searchbar>
 
-  <button ion-button secondary menuToggle>Toggle Menu</button>
+  <ion-list>
+    <ion-item [hidden]="!showMessage">
+      {{ showMessage }}
+    </ion-item>
+
+    <ion-item-sliding *ngFor="let evento of eventos | async">
+      <ion-item (click)="showDetallesEvento(evento.id)" (press)="presentActionSheet(evento)">
+        <ion-icon [name]="evento.icono" item-start></ion-icon>
+        <h2>{{ evento.nombre }}</h2>
+        <h3>{{ evento.descripcion }}</h3>
+        <p>{{ evento.fecha_agregado | date:'d MMM y, hh:mm:ss a' }}</p>
+      </ion-item>
+      <ion-item-options side="left" [hidden]="!evento.cronograma">
+        <button ion-button color="primary" (click)="showCronograma(evento)">
+          <ion-icon name="calendar"></ion-icon>
+          Cronograma
+        </button>
+      </ion-item-options>
+      <ion-item-options side="right">
+        <button ion-button color="warning" (click)="showEditarEvento(evento)">
+          <ion-icon name="open"></ion-icon>
+          Editar
+        </button>
+        <button ion-button color="danger" (click)="deleteEvento(evento.id)">
+          <ion-icon name="trash"></ion-icon>
+          Eliminar
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
 </ion-content>
