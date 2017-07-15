@@ -1,18 +1,36 @@
-import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
+import { Injectable } from '@angular/core'
+import { Http, Headers } from '@angular/http'
+import { Observable } from 'rxjs'
+import 'rxjs/add/operator/map'
 
-/*
-  Generated class for the EstadoEventoProvider provider.
-
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular DI.
-*/
 @Injectable()
 export class EstadoEventoProvider {
+  private apiUrl: string = `http://api.talentproducciones.com.ve/v1`
 
-  constructor(public http: Http) {
-    console.log('Hello EstadoEventoProvider Provider');
+  constructor(
+    private http: Http
+  ) {}
+
+  getEstadosEvento (token: string): Observable<any> {
+    return this.http.get(
+      `${this.apiUrl}/estado-eventos/`,
+      { headers: new Headers({ 'Access-Token': token }) }
+    )
+  }
+
+  createEstadoEvento (ee: { nombre: string; }, token: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/estado-eventos/`,
+      { estado_evento: ee },
+      { headers: new Headers({ 'Access-Token': token }) }
+    )
+  }
+
+  deleteEstadoEvento (id: number, token: string): Observable<any> {
+    return this.http.delete(
+      `${this.apiUrl}/estado-eventos/${id}/`,
+      { headers: new Headers({ 'Access-Token': token }) }
+    )
   }
 
 }

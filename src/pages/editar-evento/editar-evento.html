@@ -91,7 +91,7 @@
           <div padding [formGroupName]="i">
             <ion-item>
               <ion-label stacked>Descripción</ion-label>
-              <ion-input type="text" formControlName="descripcion" name="descripcion"></ion-input>
+              <ion-input type="text" formControlName="descripcion" name="descripcion" placeholder="Entrada del evento"></ion-input>
             </ion-item>
             <ion-item class="error-message" text-wrap [hidden]="editarEventoForm.controls.cronograma.controls[i].controls.descripcion.valid || (editarEventoForm.controls.cronograma.controls[i].controls.descripcion.pristine && !submitted)">
               Ingrese una desripción válida
@@ -99,7 +99,7 @@
               
             <ion-item>
               <ion-label stacked>Fecha</ion-label>
-              <ion-datetime displayFormat="YYYY/MM/DD" pickerFormat="DD MMMM YYYY" formControlName="fecha" name="fecha" cancelText="Cancelar" doneText="Seleccionar" min="{{ today }}"></ion-datetime>
+              <ion-datetime displayFormat="YYYY/MM/DD" pickerFormat="DD MMMM YYYY" formControlName="fecha" name="fecha" cancelText="Cancelar" doneText="Seleccionar" min="{{ today }}" placeholder="2017/07/22"></ion-datetime>
             </ion-item>
             <ion-item class="error-message" text-wrap [hidden]="editarEventoForm.controls.cronograma.controls[i].controls.fecha.valid || (editarEventoForm.controls.cronograma.controls[i].controls.fecha.pristine && !submitted)">
               Seleccione un fecha válida
@@ -107,10 +107,18 @@
 
             <ion-item>
               <ion-label stacked>Hora</ion-label>
-              <ion-datetime displayFormat="hh:mm a" pickerFormat="hh mm a" formControlName="hora" name="hora" cancelText="Cancelar" doneText="Seleccionar"></ion-datetime>
+              <ion-datetime displayFormat="hh:mm a" pickerFormat="hh mm a" formControlName="hora" name="hora" cancelText="Cancelar" doneText="Seleccionar" placeholder="12:00 PM"></ion-datetime>
             </ion-item>
             <ion-item class="error-message" text-wrap [hidden]="editarEventoForm.controls.cronograma.controls[i].controls.hora.valid || (editarEventoForm.controls.cronograma.controls[i].controls.hora.pristine && !submitted)">
               Seleccione una hora válida
+            </ion-item>
+
+            <ion-item>
+              <ion-label stacked>Notas</ion-label>
+              <ion-input formControlName="notas" name="notas" placeholder="Notas acerca del evento"></ion-input>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="editarEventoForm.controls.cronograma.controls[i].controls.notas.valid || (editarEventoForm.controls.cronograma.controls[i].controls.notas.pristine && !submitted)">
+              Ingrese un texto válido
             </ion-item>
           </div>
         </div>

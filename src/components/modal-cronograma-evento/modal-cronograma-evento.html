@@ -18,14 +18,18 @@
       <ion-list-header color="gris">
         Evento Interno {{ c.id }}
       </ion-list-header>
-      <ion-item>
+      <ion-item text-wrap>
         {{ c.descripcion }}
       </ion-item>
       <ion-item>
         {{ c.fecha | date:'d MMM y' }}
       </ion-item>
-      <ion-item text-wrap>
+      <ion-item>
         {{ c.hora }}
+      </ion-item>
+      <ion-item text-wrap [hidden]="!c.notas">
+        <b>Nota</b><br>
+        {{ c.notas }}
       </ion-item>
     </div>
   </ion-list>

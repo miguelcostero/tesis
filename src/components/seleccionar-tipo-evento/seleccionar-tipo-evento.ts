@@ -1,6 +1,7 @@
 import { Component } from '@angular/core'
 import { Platform, NavParams, ViewController, LoadingController, AlertController } from 'ionic-angular'
 import { Storage } from '@ionic/storage'
+import { Toast } from '@ionic-native/toast'
 import { Observable } from 'rxjs'
 
 import { TipoEventoProvider } from '../../providers/tipo-evento/tipo-evento'
@@ -22,7 +23,8 @@ export class SeleccionarTipoEventoComponent {
     private tipoEventoProvider: TipoEventoProvider,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
-    private storage: Storage
+    private storage: Storage,
+    private toast: Toast
   ) {
     this.tipo_evento = params.get('tipo_evento')
     this.initializeTiposEvento()
@@ -49,6 +51,7 @@ export class SeleccionarTipoEventoComponent {
         {
           text: 'Eliminar',
           handler: () => {
+            this.presentToast(`Tipo de evento ${id} ha sido eliminado`, 'bottom')
             this.storage.get('auth').then(auth => {
               this.tipoEventoProvider.deleteTipoEvento(id, auth.token).subscribe(res => {
                 console.log(`EVENTO ${id} ELIMINADO`, res.json())
@@ -107,6 +110,12 @@ export class SeleccionarTipoEventoComponent {
 
   private dismiss() {
     this.viewCtrl.dismiss(this.tipo_evento)
+  }
+
+  private presentToast (message: string, position: string) {
+    this.platform.ready().then(() => {
+      this.toast.show(message, 'short', position)
+    })
   }
 
 }

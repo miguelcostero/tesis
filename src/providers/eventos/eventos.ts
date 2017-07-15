@@ -28,6 +28,19 @@ export class EventosProvider {
     ).map(evento => evento.json() as Evento)
   }
 
+  createEvento (evento: Evento, token: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/eventos/`,
+      { evento },
+      { 
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          'Access-Token': token
+        }) 
+      }
+    )
+  }
+
   editEvento (evento: Evento, token: string): Observable<any> {
     return this.http.put(
       `${this.apiUrl}/eventos/${evento.id}/`,
@@ -46,6 +59,13 @@ export class EventosProvider {
       `${this.apiUrl}/eventos/?query=${nombre}`,
       { headers: new Headers({ 'Access-Token': token }) }
     ).debounceTime(300)
+  }
+
+  deleteEvento (id: number, token: string): Observable<any> {
+    return this.http.delete(
+      `${this.apiUrl}/admin/eventos/${id}/`,
+      { headers: new Headers({ 'Access-Token': token }) }
+    )
   }
 
 }

@@ -3,4 +3,5 @@ export interface EventoIn {
   descripcion: string;
   fecha: string;
   hora: string;
+  notas?: string;
 }

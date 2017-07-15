@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-import { NavController, LoadingController, AlertController, ModalController, ActionSheetController } from 'ionic-angular'
+import { NavController, LoadingController, AlertController, ModalController, ActionSheetController, Events, ToastController } from 'ionic-angular'
 import { Storage } from '@ionic/storage'
 import { Observable } from 'rxjs'
 
@@ -20,6 +20,7 @@ import { ModalCronogramaEventoComponent } from '../../components/modal-cronogram
 export class HomePage {
   private eventos: Observable<Evento[]>
   private showMessage: string
+  private auth
 
   constructor(
     private navCtrl: NavController,
@@ -28,9 +29,11 @@ export class HomePage {
     private alertCtrl: AlertController,
     private storage: Storage,
     private modalCtrl: ModalController,
-    private actionSheetCtrl: ActionSheetController
+    private actionSheetCtrl: ActionSheetController,
+    private events: Events,
+    private toast: ToastController
   ) {
-    this.initializeEventos()
+    this.subscribeToEvents()
   }
 
   getEventos (ev: any) {
@@ -58,6 +61,23 @@ export class HomePage {
     }
   }
 
+  private subscribeToEvents () {
+    this.events.subscribe('eventos:edited', (evento, time) => {
+      this.initializeEventos()
+      console.log(`Eventos actualizados a las ${time}`)
+    })
+
+    this.events.subscribe('eventos:eliminado', (id, time) => {
+      this.initializeEventos()
+      console.log(`Evento ${id} eliminado a las ${time}`)
+    })
+
+    this.events.subscribe('eventos:added', (id, time) => {
+      this.initializeEventos()
+      console.log(`Evento ${id} agreado a las ${time}`)
+    })
+  }
+
   onCancelEventos (ev: any) {
     this.initializeEventos()
   }
@@ -80,7 +100,7 @@ export class HomePage {
   }
 
   presentActionSheet (evento: Evento) {
-    let actionSheet = this.actionSheetCtrl.create({
+    let config = {
       title: `Opciones de evento`,
       buttons: [
         {
@@ -97,13 +117,6 @@ export class HomePage {
             this.showEditarEvento(evento)
           }
         },{
-          text: 'Eliminar',
-          icon: 'trash',
-          role: 'destructive',          
-          handler: () => {
-            this.deleteEvento(evento.id)
-          }
-        },{
           text: 'Cancelar',
           role: 'cancel',
           icon: 'close',
@@ -112,21 +125,79 @@ export class HomePage {
           }
         }
       ]
-    })
+    }
+
+    if (this.auth.role.id == 2 || this.auth.role.id == 3) {
+      config.buttons.push({
+        text: 'Eliminar',
+        icon: 'trash',
+        role: 'destructive',          
+        handler: () => {
+          setTimeout(()=> {
+            this.deleteEvento(evento.id)
+          })
+        }
+      })
+    }
+    let actionSheet = this.actionSheetCtrl.create(config)
     actionSheet.present()
   }
 
   deleteEvento (id: number) {
-    console.log('EVENTO ', id)
+    let confirm = this.alertCtrl.create({
+      title: `¿Está seguro que desea eliminar el evento ${id}?`,
+      message: 'Una vez eliminado, no podrá ser recuperado',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Eliminar',
+          handler: () => {
+            let loading = this.loadingCtrl.create()
+            loading.present()
+            this.storage.get('auth').then(auth => {
+              if (auth) {
+                this.eventosProvider.deleteEvento(id, auth.token).subscribe(res => {
+                  this.events.publish('eventos:eliminado', id, Date.now())
+                  this.presentToast(`Evento ${id} ha sido eliminado satisfactoriamente`)
+                }, err => {
+                  console.error('ERROR', err)
+                  loading.dismissAll()
+                  this.presentToast(`Ha ocurrido un error procesando su solicitud`)
+                }, () => loading.dismissAll())
+              }
+            })
+          }
+        }
+      ]
+    })
+    confirm.present()
   }
 
   private initializeEventos () {
     this.showMessage = null
+    this.eventos = this.eventosProvider.getEventos(this.auth.token).map(res => {
+      return res.json() as Evento[]
+    })
+  }
+
+  private presentToast (message: string) {
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000,
+      showCloseButton: true,
+      closeButtonText: 'Ok'
+    })
+    toast.present()
+  }
+
+  ionViewDidLoad () {
     this.storage.get('auth').then(auth => {
       if (auth) {
-        this.eventos = this.eventosProvider.getEventos(auth.token).map(res => {
-          return res.json() as Evento[]
-        })
+        this.auth = auth
+        this.initializeEventos()        
       }
     })
   }

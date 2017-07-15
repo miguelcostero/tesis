@@ -50,9 +50,12 @@
     <ion-list-header color="gris" [hidden]="!e.cronograma">
       Cronograma
     </ion-list-header>
-    <ion-item *ngFor="let eIn of e.cronograma">
-      <h3>{{ eIn.descripcion }}</h3>
-      <h4>{{ eIn.fecha | date:'d MMM y' }} a las {{ eIn.hora | time }}</h4>
+    <ion-item *ngFor="let c of e.cronograma" text-wrap>
+      <h3>{{ c.descripcion }}</h3>
+      <h3>{{ c.fecha | date:'d MMM y' }} a las {{ c.hora | time }}</h3>
+      <p [hidden]="!c.notas">
+        <b>NOTA</b> {{ c.notas }}
+      </p>
     </ion-item>
 
     <ion-list-header color="gris">

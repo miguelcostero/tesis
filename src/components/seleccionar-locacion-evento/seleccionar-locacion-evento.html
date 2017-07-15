@@ -13,5 +13,25 @@
 </ion-header>
 
 <ion-content>
-  {{ locacion | json }}
+  <ion-item-group>
+    <div *ngFor="let l of locaciones">
+      <ion-item-divider color="gris">
+        {{ l.nombre }}
+
+        <button ion-button outline item-end (click)="selectLocacion(l)" icon-right type="button" color="secondary">
+          Seleccionar
+          <ion-icon name="swap"></ion-icon>	
+        </button>
+      </ion-item-divider>
+      <ion-item text-wrap>
+        {{ l.direccion }}
+      </ion-item>
+      <ion-item>
+        Capacidad máxima de <b>{{ l.capacidad }}</b> invitados
+      </ion-item>
+      <ion-item *ngFor="let telefono of l.telefonos">
+        {{ telefono | telefono }}
+      </ion-item>
+    </div>
+  </ion-item-group>
 </ion-content>

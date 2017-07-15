@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core'
-import { IonicPage, NavController, NavParams, AlertController, ModalController } from 'ionic-angular'
+import { IonicPage, NavController, NavParams, AlertController, ModalController, ToastController, LoadingController, Events } from 'ionic-angular'
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from '@angular/forms'
+import { Storage } from '@ionic/storage'
 
 import { EventosProvider } from '../../providers/eventos/eventos'
 
 import { Evento } from '../../interfaces/evento'
+
+import * as iconos from '../../enviroment/iconos'
 
 import { SeleccionarClienteEventoComponent } from '../../components/seleccionar-cliente-evento/seleccionar-cliente-evento'
 import { SeleccionarEstadoEventoComponent } from '../../components/seleccionar-estado-evento/seleccionar-estado-evento'
@@ -31,23 +34,38 @@ export class EditarEventoPage implements OnInit {
     private eventosProvider: EventosProvider,
     private _fb: FormBuilder,
     private alertCtrl: AlertController,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private toast: ToastController,
+    private loadingCtrl: LoadingController,
+    private storage: Storage,
+    private events: Events
   ) {
     this.evento = this.navParams.get('evento')
-    this.iconos = [
-      'analytics',
-      'american-football',
-      'beer',
-      'bonfire',
-      'book',
-      'brush',
-      'cafe'
-    ]
+    this.iconos = iconos.default
   }
 
-  editar (model, isValid) {
+  editar (model: Evento, isValid: boolean) {
     this.submitted = true
-    console.log(isValid ? 'VALIDO' : 'INVALIDO')
+    if (isValid) {
+      let loading = this.loadingCtrl.create()
+      loading.present()
+      this.storage.get('auth').then(auth => {
+        this.eventosProvider.editEvento(model, auth.token).subscribe(res => {
+          let eventoEditado = res.json()
+          this.events.publish('eventos:edited', eventoEditado, Date.now())
+          this.presentToast(`Evento ${eventoEditado.id} actualizado correctamente`)
+          this.navCtrl.pop()
+        }, err => {
+          loading.dismissAll()
+          this.presentToast(`Ha ocurrido un error procesando su solicitud`);
+          console.log('ERROR', err)
+        }, () => {
+          loading.dismissAll()
+        })
+      })
+    } else {
+      this.presentToast(`Complete todos los campos de manera válida`)
+    }
   }
 
   initCronograma () {
@@ -62,6 +80,9 @@ export class EditarEventoPage implements OnInit {
       ]],
       hora: ['', [
         <any>Validators.required
+      ]],
+      notas: ['', [
+        <any>Validators.minLength(10)
       ]]
     })
   }
@@ -112,7 +133,7 @@ export class EditarEventoPage implements OnInit {
 
   removeFromCronograma (i: number) {
     let alert = this.alertCtrl.create({
-      title: `¿Desea eliminar evento ${i+1}?`,
+      title: `¿Desea eliminar evento interno?`,
       message: 'Este evento interno no podrá ser recuperado',
       buttons: [
         {
@@ -149,6 +170,9 @@ export class EditarEventoPage implements OnInit {
           ]],
           hora: [ev.hora, [
             <any>Validators.required
+          ]],
+          notas: [ev.notas, [
+            <any>Validators.minLength(10)
           ]]
         }))
       })
@@ -157,6 +181,9 @@ export class EditarEventoPage implements OnInit {
     }
 
     this.editarEventoForm = this._fb.group({
+      id: [this.evento.id, [
+        <any>Validators.required
+      ]],
       nombre: [this.evento.nombre, [
         <any>Validators.required, 
         <any>Validators.minLength(5),
@@ -199,10 +226,20 @@ export class EditarEventoPage implements OnInit {
     })
   }
 
+  private presentToast (message: string) {
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000,
+      showCloseButton: true,
+      closeButtonText: 'Ok'
+    })
+    toast.present()
+  }
+
   private cambiarIdOnSeleccionar (group: string, id: number) {
     const controlGroup = <FormGroup>this.editarEventoForm.controls[group]
     const control = <FormControl>controlGroup.controls['id']
-    control.setValue(21893217392817)
+    control.setValue(id)
   }
 
 }

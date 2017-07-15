@@ -39,7 +39,7 @@
           <ion-icon name="open"></ion-icon>
           Editar
         </button>
-        <button ion-button color="danger" (click)="deleteEvento(evento.id)">
+        <button ion-button color="danger" (click)="deleteEvento(evento.id)" *ngIf="auth.role.id == 2 || auth.role.id == 3">
           <ion-icon name="trash"></ion-icon>
           Eliminar
         </button>

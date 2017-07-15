@@ -1,18 +1,206 @@
-<!--
-  Generated template for the CrearEventoPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>CrearEvento</ion-title>
+  <ion-navbar color="primary">
+    <ion-title>Crear nuevo evento</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 
-<ion-content padding>
+<ion-content>
+  <form (ngSubmit)="submit(crearEventoForm.valid)" [formGroup]="crearEventoForm" novalidate>
+    <ion-list>
 
+      <ion-list-header color="gris">
+        Datos básicos
+      </ion-list-header>
+      <div padding>
+        <ion-item>
+          <ion-label stacked>Nombre</ion-label>
+          <ion-input type="text" formControlName="nombre" name="nombre" placeholder="Maracaibo rock"></ion-input>
+        </ion-item>
+        <ion-item class="error-message" text-wrap [hidden]="crearEventoForm.controls.nombre.valid || (crearEventoForm.controls.nombre.pristine && !submitted)">
+          Ingrese un nombre válido
+        </ion-item>
+
+        <ion-item>
+          <ion-label stacked>Descripción</ion-label>
+          <ion-input type="text" formControlName="descripcion" name="descripcion" placeholder="Gatorade Maracaibo Rock"></ion-input>
+        </ion-item>
+        <ion-item class="error-message" text-wrap [hidden]="crearEventoForm.controls.descripcion.valid || (crearEventoForm.controls.descripcion.pristine && !submitted)">
+          Ingrese una descripción válida
+        </ion-item>
+
+        <ion-item>
+          <ion-label stacked>Invitados</ion-label>
+          <ion-input type="number" formControlName="invitados" name="invitados" placeholder="100"></ion-input>
+        </ion-item>
+        <ion-item class="error-message" text-wrap [hidden]="crearEventoForm.controls.invitados.valid || (crearEventoForm.controls.invitados.pristine && !submitted)">
+          Ingrese un número válido de invitados
+        </ion-item>
+        
+        <ion-item>
+          <ion-label stacked>Icono</ion-label>
+          <ion-select formControlName="icono" name="icono" cancelText="Cancelar" okText="Seleccionar">
+            <ion-option *ngFor="let icono of iconos" [value]="icono" [selected]="icono == evento.icono">{{ icono }}</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-item class="error-message" text-wrap [hidden]="crearEventoForm.controls.icono.valid || (crearEventoForm.controls.icono.pristine && !submitted)">
+          Seleccione un icono de la lista
+        </ion-item>
+      </div>
+
+      <ion-list-header color="gris">
+        Tipo de evento
+      </ion-list-header>
+      <div padding [hidden]="!evento.tipo_evento">
+        <ion-item>
+          {{ evento.tipo_evento?.nombre }}
+        </ion-item>
+      </div>
+      <div padding [hidden]="evento.tipo_evento">
+        <ion-item>
+          Seleccione un tipo de evento
+        </ion-item>
+      </div>
+      <a ion-button full color="primary" outline icon-right (click)="selectTipoEvento(evento.tipo_evento)">
+				Seleccionar tipo de evento
+  			<ion-icon name="chatbubbles"></ion-icon>
+			</a>
+
+      <ion-list-header color="gris">
+        Estado del evento
+      </ion-list-header>
+      <div padding [hidden]="!evento.estado_evento">
+        <ion-item>
+          {{ evento.estado_evento?.nombre }}
+        </ion-item>
+      </div>
+      <div padding [hidden]="evento.estado_evento">
+        <ion-item>
+          Seleccione un estado de evento
+        </ion-item>
+      </div>
+      <a ion-button full color="warning" outline icon-right (click)="selectEstadoEvento(evento.estado_evento)">
+				Seleccionar estado de evento
+  			<ion-icon name="list"></ion-icon>
+			</a>
+
+      <ion-list-header color="gris">
+        Cronograma
+      </ion-list-header>
+      <div formArrayName="cronograma">
+        <div *ngFor="let c of crearEventoForm.controls.cronograma.controls; let i = index">
+          <ion-list-header color="light">
+            Evento {{ i + 1 }}
+
+            <button ion-button outline item-end (click)="removeFromCronograma(i)" icon-right type="button" color="danger">
+              Eliminar
+              <ion-icon name="trash"></ion-icon>	
+            </button>
+          </ion-list-header>
+          <div padding [formGroupName]="i">
+            <ion-item>
+              <ion-label stacked>Descripción</ion-label>
+              <ion-input type="text" formControlName="descripcion" name="descripcion" placeholder="Entrada del evento"></ion-input>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="crearEventoForm.controls.cronograma.controls[i].controls.descripcion.valid || (crearEventoForm.controls.cronograma.controls[i].controls.descripcion.pristine && !submitted)">
+              Ingrese una desripción válida
+            </ion-item>
+              
+            <ion-item>
+              <ion-label stacked>Fecha</ion-label>
+              <ion-datetime displayFormat="YYYY/MM/DD" pickerFormat="DD MMMM YYYY" formControlName="fecha" name="fecha" cancelText="Cancelar" doneText="Seleccionar" min="{{ today }}" placeholder="2017/07/22"></ion-datetime>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="crearEventoForm.controls.cronograma.controls[i].controls.fecha.valid || (crearEventoForm.controls.cronograma.controls[i].controls.fecha.pristine && !submitted)">
+              Seleccione un fecha válida
+            </ion-item>
+
+            <ion-item>
+              <ion-label stacked>Hora</ion-label>
+              <ion-datetime displayFormat="hh:mm a" pickerFormat="hh mm a" formControlName="hora" name="hora" cancelText="Cancelar" doneText="Seleccionar" placeholder="12:00 PM"></ion-datetime>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="crearEventoForm.controls.cronograma.controls[i].controls.hora.valid || (crearEventoForm.controls.cronograma.controls[i].controls.hora.pristine && !submitted)">
+              Seleccione una hora válida
+            </ion-item>
+
+            <ion-item>
+              <ion-label stacked>Notas</ion-label>
+              <ion-input formControlName="notas" name="notas" placeholder="Notas acerca del evento"></ion-input>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="crearEventoForm.controls.cronograma.controls[i].controls.notas.valid || (crearEventoForm.controls.cronograma.controls[i].controls.notas.pristine && !submitted)">
+              Ingrese un texto válido
+            </ion-item>
+          </div>
+        </div>
+      </div>
+      <a ion-button full color="danger" outline icon-right (click)="addToCronograma()">
+				Agregar evento al cronograma
+  			<ion-icon name="add"></ion-icon>
+			</a>
+
+      <ion-list-header color="gris">
+        Cliente
+      </ion-list-header>
+      <div padding [hidden]="!evento.cliente">
+        <ion-item>
+          {{ evento.cliente?.dni }}
+        </ion-item>
+        <ion-item>
+          {{ evento.cliente?.nombre }}
+        </ion-item>
+        <ion-item>
+          {{ evento.cliente?.email }}
+        </ion-item>
+        <ion-item text-wrap>
+          {{ evento.cliente?.direccion }}
+        </ion-item>
+        <ion-item *ngFor="let telefono of evento.cliente?.telefonos">
+            {{ telefono | telefono }}
+        </ion-item>
+      </div>
+      <div padding [hidden]="evento.cliente">
+        <ion-item>
+          Seleccione un cliente
+        </ion-item>
+      </div>
+      <a ion-button full color="warning" outline icon-right (click)="selectCliente(evento.cliente)">
+				Seleccionar cliente
+  			<ion-icon name="people"></ion-icon>
+			</a>
+
+      <ion-list-header color="gris">
+        Locación
+      </ion-list-header>
+      <div padding [hidden]="!evento.locacion">
+        <ion-item>
+          {{ evento.locacion?.nombre }}
+        </ion-item>
+        <ion-item text-wrap>
+          {{ evento.locacion?.direccion }}
+        </ion-item>
+        <ion-item>
+          Capacidad máxima de <b>{{ evento.locacion?.capacidad }}</b> invitados
+        </ion-item>
+        <ion-item *ngFor="let telefono of evento.locacion?.telefonos">
+            {{ telefono | telefono }}
+        </ion-item>
+      </div>
+      <div padding [hidden]="evento.locacion">
+        <ion-item>
+          Seleccione una locación
+        </ion-item>
+      </div>
+      <a ion-button full color="secondary" outline icon-right (click)="selectLocacion(evento.locacion)">
+				Seleccionar locación
+  			<ion-icon name="pin"></ion-icon>
+			</a>
+      
+    </ion-list>
+
+    <div padding>
+      <button ion-button type="submit" block color="secondary">
+        Crear nuevo evento
+      </button>
+    </div>
+
+  </form>
 </ion-content>
