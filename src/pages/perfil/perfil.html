@@ -1,48 +1,169 @@
 <ion-header>
-  <ion-navbar color="primary">
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>Perfil</ion-title>
-  </ion-navbar>
+	<ion-navbar color="primary">
+		<button ion-button menuToggle>
+			<ion-icon name="menu"></ion-icon>
+		</button>
+		<ion-title>Perfil</ion-title>
+	</ion-navbar>
 </ion-header>
+	
+<ion-content>
+	<form (ngSubmit)="submit(editarPerfilForm.valid)" [formGroup]="editarPerfilForm" novalidate>  
+		<ion-list>
+			<ion-list-header color="gris">
+				Datos de autentificación
+			</ion-list-header>
+			<div padding>
+				<ion-item>
+					<ion-label stacked>Correo electrónico</ion-label>
+					<ion-input type="email" formControlName="email" name="email"></ion-input>
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="editarPerfilForm.controls.email.valid || (editarPerfilForm.controls.email.pristine && !submitted)">
+					Ingrese un correo electrónico válido
+				</ion-item>
+					
+				<ion-item>
+					<ion-label stacked>Contraseña</ion-label>
+					<ion-input type="password" formControlName="password" name="password" placeholder="***********"></ion-input>
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="editarPerfilForm.controls.password.valid || (editarPerfilForm.controls.password.pristine && !submitted)">
+					Ingrese una contraseña válida.
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="!editarPerfilForm.controls.password.errors?.minlength">
+					Su contraseña debe contener de un mínimo de 6 caracteres
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="!editarPerfilForm.controls.password.errors?.MissNumber">
+					Su contraseña debe contener al menos 1 número
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="!editarPerfilForm.controls.password.errors?.MissSpecialCaracter">
+					Su contraseña debe contener al menos 1 caracter especial
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="!editarPerfilForm.controls.password.errors?.MissUpperCaseLetter">
+					Su contraseña debe contener al menos 1 letra mayúscula
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="!editarPerfilForm.controls.password.errors?.MissLowerCaseLetter">
+					Su contraseña debe contener al menos 1 letra minúscula
+				</ion-item>
+			</div>
+				
+			<ion-list-header color="gris">
+				Datos de identificación
+			</ion-list-header>
+			<div padding>
+				<ion-item>
+					<ion-label stacked>Nombre</ion-label>
+					<ion-input type="text" formControlName="nombre" name="nombre"></ion-input>
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="editarPerfilForm.controls.nombre.valid || (editarPerfilForm.controls.nombre.pristine && !submitted)">
+					Ingrese su nombre
+				</ion-item>
+					
+				<ion-item>
+					<ion-label stacked>Apellido</ion-label>
+					<ion-input type="text" formControlName="apellido" name="apellido"></ion-input>
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="editarPerfilForm.controls.apellido.valid || (editarPerfilForm.controls.apellido.pristine && !submitted)">
+					Ingrese su apellido
+				</ion-item>
+					
+				<ion-item>
+					<ion-label stacked>Fecha de nacimiento</ion-label>
+					<ion-datetime displayFormat="DD MMMM YYYY" formControlName="fecha_nacimiento" name="fecha_nacimiento" cancelText="Cancelar" doneText="Seleccionar" [max]="maxAge"></ion-datetime>
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="editarPerfilForm.controls.fecha_nacimiento.valid || (editarPerfilForm.controls.fecha_nacimiento.pristine && !submitted)">
+					Ingrese su fecha de nacimiento
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="!editarPerfilForm.controls.fecha_nacimiento.errors?.not18">
+					Usted debe tener al menos 18 años
+				</ion-item>				
+			</div>
 
-<ion-content padding>
-  <h2>Modificar perfil</h2>
-  <img [src]="empleado?.img_perfil">  
-  <ion-list>
-    <ion-item>
-      <ion-label floating>Correo electrónico</ion-label>
-      <ion-input type="email"></ion-input>
-    </ion-item>
+			<ion-list-header color="gris">
+        Imagen de perfil
+			</ion-list-header>
+			<div padding>
+				<img [src]="editarPerfilForm.controls.img_perfil.value" ion-item img-perfil>
 
-    <ion-item>
-      <ion-label floating>Contraseña</ion-label>
-      <ion-input type="password"></ion-input>
-    </ion-item>
+				<ion-grid>
+					<ion-row>
+						<ion-col col-6>
+							<a ion-button block color="warning" icon-right (click)="abrirCamara()">
+								Abrir cámara
+								<ion-icon name="camera"></ion-icon>
+							</a>
+						</ion-col>
+						<ion-col col-6>
+							<a ion-button block color="danger" icon-right (click)="abrirGaleria()">
+								Abrir galeria
+								<ion-icon name="image"></ion-icon>
+							</a>
+						</ion-col>
+					</ion-row>
+				</ion-grid>
+			</div>
 
-    <ion-item>
-      <ion-label floating>Nombre</ion-label>
-      <ion-input type="text" ></ion-input>
-    </ion-item>
+			<ion-list-header color="gris">
+        Teléfonos
+			</ion-list-header>
+			<div formArrayName="telefonos">
+				<div *ngFor="let telefono of editarPerfilForm.controls.telefonos.controls; let i = index">
+					<ion-list-header color="light">
+            Teléfono {{ i + 1 }}
 
-    <ion-item>
-      <ion-label floating>Apellido</ion-label>
-      <ion-input type="text" ></ion-input>
-    </ion-item>
+            <button ion-button outline item-end (click)="removeFromTelefonos(i)" icon-right type="button" color="danger">
+              Eliminar
+              <ion-icon name="trash"></ion-icon>	
+            </button>
+					</ion-list-header>
+					<div padding [formGroupName]="i">
 
-    <ion-item>
-      <ion-label floating>Fecha de nacimiento</ion-label>
-      <ion-datetime displayFormat="YYYY/MM/DD" [(ngModel)]="fecha_nacimiento"></ion-datetime>
-    </ion-item>
+						<ion-item>
+              <ion-label stacked>Prefijo</ion-label>
+              <ion-input type="num" formControlName="prefijo" name="prefijo" placeholder="0268"></ion-input>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="editarPerfilForm.controls.telefonos.controls[i].controls.prefijo.valid || (editarPerfilForm.controls.telefonos.controls[i].controls.prefijo.pristine && !submitted)">
+              Ingrese un prefijo válido
+						</ion-item>
+						
+						<ion-item>
+              <ion-label stacked>Número</ion-label>
+              <ion-input type="num" formControlName="numero" name="numero" placeholder="0898976"></ion-input>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="editarPerfilForm.controls.telefonos.controls[i].controls.numero.valid || (editarPerfilForm.controls.telefonos.controls[i].controls.numero.pristine && !submitted)">
+              Ingrese un número válido
+						</ion-item>
+						
+						<ion-item>
+              <ion-label stacked>País</ion-label>
+							<ion-select formControlName="pais" name="pais" cancelText="Cancelar" okText="Seleccionar">
+								<ion-option *ngFor="let c of countries" [value]="c.code" [selected]="c.code == editarPerfilForm.controls.telefonos.controls[i].controls.pais.value">{{ c.name }}</ion-option>
+							</ion-select>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="editarPerfilForm.controls.telefonos.controls[i].controls.pais.valid || (editarPerfilForm.controls.telefonos.controls[i].controls.pais.pristine && !submitted)">
+              Seleccione un país de la lista
+						</ion-item>
 
-    <ion-item>
-      <ion-label floating>Imagen de perfil</ion-label>
-      <ion-input type="url" ></ion-input>
-    </ion-item>
+					</div>
+				</div>
 
-    <ion-item>
-      {{ empleado | json }}
-    </ion-item>
-  </ion-list>
+				<div padding>
+					<ion-item [hidden]="editarPerfilForm.controls.telefonos.controls.length > 0" text-wrap>
+						No existe ningun teléfono asociado a tu perfil
+					</ion-item>
+				</div>
+
+				<a ion-button full color="danger" outline icon-right (click)="addToTelefonos()">
+					Agregar número de teléfono
+					<ion-icon name="add"></ion-icon>
+				</a>
+			</div>
+		</ion-list>
+			
+		<div padding submit>
+			<button ion-button type="submit" block color="secondary">
+				Editar perfil
+			</button>
+		</div>
+	</form>    
 </ion-content>
+	

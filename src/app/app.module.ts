@@ -18,11 +18,13 @@ import { PerfilPage } from '../pages/perfil/perfil'
 import { EventoDetallesPage } from '../pages/evento-detalles/evento-detalles'
 import { CrearEventoPage } from '../pages/crear-evento/crear-evento'
 import { EditarEventoPage } from '../pages/editar-evento/editar-evento'
+import { CrearClientePage } from '../pages/crear-cliente/crear-cliente'
 
 import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
 import { Toast } from '@ionic-native/toast'
 import { HeaderColor } from '@ionic-native/header-color'
+import { Camera } from '@ionic-native/camera'
 
 import { AuthProvider } from '../providers/auth/auth'
 import { PerfilProvider } from '../providers/perfil/perfil'
@@ -35,10 +37,12 @@ import { SeleccionarEstadoEventoComponent } from '../components/seleccionar-esta
 import { SeleccionarLocacionEventoComponent } from '../components/seleccionar-locacion-evento/seleccionar-locacion-evento'
 import { SeleccionarClienteEventoComponent } from '../components/seleccionar-cliente-evento/seleccionar-cliente-evento'
 import { SeleccionarTipoEventoComponent } from '../components/seleccionar-tipo-evento/seleccionar-tipo-evento'
-import { ClientesProvider } from '../providers/clientes/clientes';
-import { TipoEventoProvider } from '../providers/tipo-evento/tipo-evento';
-import { EstadoEventoProvider } from '../providers/estado-evento/estado-evento';
-import { LocacionesProvider } from '../providers/locaciones/locaciones';
+import { ClientesProvider } from '../providers/clientes/clientes'
+import { TipoEventoProvider } from '../providers/tipo-evento/tipo-evento'
+import { EstadoEventoProvider } from '../providers/estado-evento/estado-evento'
+import { LocacionesProvider } from '../providers/locaciones/locaciones'
+import { TelefonosProvider } from '../providers/telefonos/telefonos'
+import { EmpleadosProvider } from '../providers/empleados/empleados'
 
 @NgModule({
   declarations: [
@@ -54,6 +58,7 @@ import { LocacionesProvider } from '../providers/locaciones/locaciones';
     EventoDetallesPage,
     CrearEventoPage,
     EditarEventoPage,
+    CrearClientePage,
     ModalCronogramaEventoComponent,
     TelefonoPipe,
     TimePipe,
@@ -67,7 +72,36 @@ import { LocacionesProvider } from '../providers/locaciones/locaciones';
     HttpModule,
     FormsModule,
     ReactiveFormsModule,
-    IonicModule.forRoot(MyApp),
+    IonicModule.forRoot(MyApp, {
+      monthNames: [
+        'Enero',
+        'Febrero',
+        'Marzo',
+        'Abril',
+        'Mayo',
+        'Junio',
+        'Julio',
+        'Agosto',
+        'Septiembre',
+        'Octubre',
+        'Noviembre',
+        'Diciembre'
+      ],
+      monthShortNames: [
+        'Ene',
+        'Feb',
+        'Mar',
+        'Abr',
+        'May',
+        'Jun',
+        'Jul',
+        'Ago',
+        'Sept',
+        'Oct',
+        'Nov',
+        'Dic'
+      ]
+    }),
     IonicStorageModule.forRoot({
       name: '__tp'
     })
@@ -86,6 +120,7 @@ import { LocacionesProvider } from '../providers/locaciones/locaciones';
     EventoDetallesPage,
     CrearEventoPage,
     EditarEventoPage,
+    CrearClientePage,
     ModalCronogramaEventoComponent,
     SeleccionarEstadoEventoComponent,
     SeleccionarLocacionEventoComponent,
@@ -98,6 +133,7 @@ import { LocacionesProvider } from '../providers/locaciones/locaciones';
     Toast,
     HeaderColor,
     CallNumber,
+    Camera,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AuthProvider,
     PerfilProvider,
@@ -106,7 +142,9 @@ import { LocacionesProvider } from '../providers/locaciones/locaciones';
     ClientesProvider,
     TipoEventoProvider,
     EstadoEventoProvider,
-    LocacionesProvider
+    LocacionesProvider,
+    TelefonosProvider,
+    EmpleadosProvider
   ]
 })
 export class AppModule {}

@@ -29,7 +29,7 @@ export class EventoDetallesPage {
     private platform: Platform,
     private alertCtrl: AlertController
   ) {
-    this.eventoId = navParams.get('id') 
+    this.eventoId = this.navParams.get('id') 
   }
 
   ionViewDidLoad() {

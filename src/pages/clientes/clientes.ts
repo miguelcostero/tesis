@@ -1,24 +1,60 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core'
+import { IonicPage, NavController, Events, LoadingController, ToastController } from 'ionic-angular'
+import { Storage } from '@ionic/storage'
 
-/**
- * Generated class for the ClientesPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
+import { CrearClientePage } from '../crear-cliente/crear-cliente'
+
+import { Cliente } from '../../interfaces/cliente'
+
+import { ClientesProvider } from '../../providers/clientes/clientes'
+
 @IonicPage()
 @Component({
   selector: 'page-clientes',
   templateUrl: 'clientes.html',
 })
-export class ClientesPage {
+export class ClientesPage implements OnInit {
+  private clientes: Cliente[]
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor (
+    private navCtrl: NavController,
+    private _events: Events,
+    private _clintes: ClientesProvider,
+    private _storage: Storage,
+    private loadingCtrl: LoadingController,
+    private toastCtrl: ToastController
+  ) {}
+
+  ngOnInit () {
+
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ClientesPage');
+    let loading = this.loadingCtrl.create()
+    loading.present()
+    this._storage.get('auth').then(auth => {
+      this._clintes.getClientes(auth.token).map(res => res.json() as Cliente[]).subscribe(clientes => {
+        this.clientes = clientes
+      }, err => {
+        loading.dismiss()
+        this.presentToast('Ha ocurrido un error inesperado, porfavor intente de nuevo')
+        console.error('ERROR', err)
+      }, () => loading.dismiss())
+    })
+  }
+
+  private goCrearCliente () {
+    this.navCtrl.push(CrearClientePage)
+  }
+
+  private presentToast (message: string) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 3000,
+      showCloseButton: true,
+      closeButtonText: 'Ok'
+    })
+    toast.present()
   }
 
 }

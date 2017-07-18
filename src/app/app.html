@@ -7,7 +7,7 @@
 
   <ion-content>
     <ion-list>
-      <img src="{{ empladoLogged?.img_perfil }}" ion-item profile-photo>
+      <img [src]="empladoLogged?.img_perfil" ion-item profile-photo>
       <ion-list-header color="light">
         Bienvenid@ {{ empladoLogged?.nombre }} {{ empladoLogged?.apellido }}
       </ion-list-header>

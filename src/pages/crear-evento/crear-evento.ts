@@ -137,6 +137,26 @@ export class CrearEventoPage implements OnInit {
     })
   }
 
+  private removeFromCronograma (i: number) {
+    let alert = this.alertCtrl.create({
+      title: `¿Desea eliminar evento interno?`,
+      message: 'Este evento interno no podrá ser recuperado',
+      buttons: [
+        {
+          text: 'Cancelar'
+        },
+        {
+          text: 'Eliminar',
+          handler: () => {
+            const control = <FormArray>this.crearEventoForm.controls['cronograma']
+            control.removeAt(i)
+          }
+        }
+      ]
+    })
+    alert.present()
+  }
+
   private selectCliente (cliente) {
     let modal = this.modalCtrl.create(SeleccionarClienteEventoComponent, { cliente })
     modal.present()

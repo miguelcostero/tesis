@@ -1,10 +1,13 @@
 import { Component, ViewChild } from '@angular/core'
-import { Nav, Platform, LoadingController, Events } from 'ionic-angular'
+import { Nav, Platform, Events } from 'ionic-angular'
 import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
 import { HeaderColor } from '@ionic-native/header-color'
+import { Storage } from '@ionic/storage'
+import * as firebase from 'firebase'
 
 import { AuthProvider } from '../providers/auth/auth'
+import { EmpleadosProvider } from '../providers/empleados/empleados'
 
 import { HomePage } from '../pages/home/home'
 import { LoginPage } from '../pages/login/login'
@@ -36,8 +39,9 @@ export class MyApp {
     private splashScreen: SplashScreen,
     private auth: AuthProvider,
     private headerColor: HeaderColor,
-    private loadingCtrl: LoadingController,
-    private events: Events
+    private events: Events,
+    private _empleados: EmpleadosProvider,
+    private storage: Storage
   ) {
     this.initializeApp()
     this.checkLogin()
@@ -55,6 +59,18 @@ export class MyApp {
     this.empleadosPage = { title: 'Empleados', component: EmpleadosPage }
   }
 
+  private initializeFirebase () {
+    const firebaseConfig = {
+      apiKey: 'AIzaSyAaJEYQox-nue8aBp9uRLt6Y8sNrPDWyzs',
+      authDomain: 'tesis-7ffec.firebaseapp.com',
+      databaseURL: 'https://tesis-7ffec.firebaseio.com',
+      projectId: 'tesis-7ffec',
+      storageBucket: 'tesis-7ffec.appspot.com',
+      messagingSenderId: '243420000366'
+    }
+    firebase.initializeApp(firebaseConfig)
+  }
+
   private initializeApp() {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -63,6 +79,7 @@ export class MyApp {
       this.statusBar.backgroundColorByHexString(this.mainColor)
       this.headerColor.tint(this.mainColor)
       this.splashScreen.hide()
+      this.initializeFirebase()
     })
   }
 
@@ -77,16 +94,32 @@ export class MyApp {
       console.log('Empleado logged out at ' + time)
       this.empladoLogged = null
     })
+
+    this.events.subscribe('empleado:updated', time => {
+      console.log('Empleado updated at ' + time)
+      this.storage.get('auth').then(auth => {
+        this._empleados.getEmpleado(auth.id, auth.token).subscribe(perfil => {
+          let p = perfil.json()[0]
+          this.empladoLogged = p
+          this.storage.set('auth', {
+            id: auth.id,
+            token: auth.token,
+            email: p.email,
+            nombre: p.nombre,
+            apellido: p.apellido,
+            fecha_nacimiento: p.fecha_nacimiento,
+            img_perfil: p.img_perfil,
+            telefonos: p.telefonos,
+            role: p.role
+          })
+        }, err => console.error('ERROR', err))
+      })
+    })
   }
 
   private checkLogin () {
-    let loading = this.loadingCtrl.create({
-      dismissOnPageChange: true
-    })
-    loading.present()
     // Check if user is logged
     this.auth.checkLogin().then(auth => {
-      loading.dismissAll()
       this.empladoLogged = auth
       this.isAdmin = this.empladoLogged.role.id === '2' || this.empladoLogged.role.id === '3' ? true : false
     }).catch(err => {

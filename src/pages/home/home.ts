@@ -37,12 +37,13 @@ export class HomePage {
   }
 
   getEventos (ev: any) {
-    this.initializeEventos()
-
     // set val to the value of the searchbar
     let val = ev.target.value
 
-    if (!val) return
+    if (!val) {
+      this.initializeEventos()
+      return
+    }
 
     // if the value is an empty string don't filter the items
     if (val && val.trim() != '') {
@@ -177,8 +178,11 @@ export class HomePage {
   }
 
   private initializeEventos () {
+    let loading = this.loadingCtrl.create()
+    loading.present()
     this.showMessage = null
     this.eventos = this.eventosProvider.getEventos(this.auth.token).map(res => {
+      loading.dismiss()
       return res.json() as Evento[]
     })
   }
