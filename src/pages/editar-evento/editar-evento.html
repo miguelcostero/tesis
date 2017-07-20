@@ -73,6 +73,46 @@
       <a ion-button full color="warning" outline icon-right (click)="selectEstadoEvento(evento.estado_evento)">
 				Seleccionar estado de evento
   			<ion-icon name="list"></ion-icon>
+      </a>
+      
+      <ion-list-header color="gris">
+        Talentos
+      </ion-list-header>
+      <div padding>
+        <ion-item [hidden]="evento.talentos" text-wrap>
+          No existen talentos asociados a este evento
+        </ion-item>
+      </div>
+      <div formArrayName="talentos">
+        <div *ngFor="let talento of editarEventoForm.controls.talentos.controls; let i = index">
+          <ion-list-header color="light">
+            Talento {{ i + 1 }}
+
+            <button ion-button outline item-end (click)="removeFromTalentos(i)" icon-right type="button" color="danger">
+              Eliminar
+              <ion-icon name="trash"></ion-icon>	
+            </button>
+          </ion-list-header>
+          <div padding [formGroupName]="i">
+            <ion-item>
+              {{ evento.talentos[i]?.nombre }}
+            </ion-item>
+            <ion-item text-wrap [hidden]="!evento.talentos[i]?.notas">
+              {{ evento.talentos[i]?.notas }}
+            </ion-item>
+            <ion-item>
+              {{ evento.talentos[i]?.email }}
+            </ion-item>
+            <ion-item *ngFor="let telefono of evento.talentos[i]?.telefonos">
+              {{ telefono | telefono }}
+            </ion-item>
+          </div>
+        </div>
+      </div>
+
+      <a ion-button full color="success" outline icon-right (click)="selectTalento()">
+				Agregar talento
+  			<ion-icon name="microphone"></ion-icon>
 			</a>
 
       <ion-list-header color="gris" [hidden]="!evento.cronograma">

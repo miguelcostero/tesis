@@ -1,15 +1,30 @@
 <ion-header>
-
   <ion-navbar color="primary">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Talentos</ion-title>
   </ion-navbar>
-
 </ion-header>
 
+<ion-fab right bottom>
+  <button ion-fab color="primary" (click)="goCrearTalento()">
+    <ion-icon name="add"></ion-icon>
+  </button>
+</ion-fab>
 
-<ion-content padding>
-
+<ion-content>
+  <ion-list>
+    <div padding [hidden]="talentos">
+      <ion-item>
+        No existen talentos en la base de datos
+      </ion-item>
+    </div>
+    <div padding *ngFor="let talento of talentos" (press)="presentActionSheet(talento)" (click)="showDetails(talento)">
+      <ion-item>
+        <h2>{{ talento.nombre }}</h2>
+        <p [hidden]="talento?.notas">{{ talento.notas }} </p>
+      </ion-item>
+    </div>
+  </ion-list>
 </ion-content>

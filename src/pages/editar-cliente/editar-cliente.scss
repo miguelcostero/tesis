@@ -1,0 +1,52 @@
+page-editar-cliente {
+  ion-content.cards-bg {
+    background-color: #ededed;
+  }
+
+  ion-card {
+    ion-card-header {
+      font-size: 3rem !important;
+    }
+  }
+
+  ion-item {
+    padding-left: 0px !important;
+  }
+
+  div[padding] {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+
+  ion-item {
+    padding-left: 0px !important;
+  }
+
+  .item-block:first-child {
+    border-top: 0 !important;
+  }
+
+  .error-message {
+    color: red;
+    display: block;
+    max-width: 100%;
+    word-wrap: break-word;
+  }
+
+  .error-message .item-inner {
+    border-bottom: 0 !important;
+  }
+
+  ion-list {
+    margin-bottom: 5px !important;
+  }
+
+  [submit] {
+    margin-top: 15px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .list-header-md, .list-header-ios {
+    margin-bottom: 0px !important;
+  }
+}

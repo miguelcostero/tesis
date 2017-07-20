@@ -120,10 +120,7 @@ export class HomePage {
         },{
           text: 'Cancelar',
           role: 'cancel',
-          icon: 'close',
-          handler: () => {
-            console.log('Cancel clicked')
-          }
+          icon: 'exit'
         }
       ]
     }
@@ -132,7 +129,7 @@ export class HomePage {
       config.buttons.push({
         text: 'Eliminar',
         icon: 'trash',
-        role: 'destructive',          
+        role: 'destructive',
         handler: () => {
           setTimeout(()=> {
             this.deleteEvento(evento.id)
@@ -177,14 +174,15 @@ export class HomePage {
     confirm.present()
   }
 
-  private initializeEventos () {
-    let loading = this.loadingCtrl.create()
-    loading.present()
-    this.showMessage = null
-    this.eventos = this.eventosProvider.getEventos(this.auth.token).map(res => {
-      loading.dismiss()
-      return res.json() as Evento[]
+  private initializeEventos (): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.showMessage = null
+      this.eventos = this.eventosProvider.getEventos(this.auth.token).map(res => {
+        resolve(true)
+        return res.json() as Evento[]
+      })
     })
+    
   }
 
   private presentToast (message: string) {
@@ -201,7 +199,10 @@ export class HomePage {
     this.storage.get('auth').then(auth => {
       if (auth) {
         this.auth = auth
-        this.initializeEventos()        
+        let loading = this.loadingCtrl.create()
+        loading.present().then(() => {
+          this.initializeEventos().then(() => loading.dismiss())
+        })
       }
     })
   }

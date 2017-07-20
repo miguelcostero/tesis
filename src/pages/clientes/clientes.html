@@ -14,5 +14,18 @@
 </ion-fab>
 
 <ion-content>
-  {{ clientes | json }}
+  <ion-list>
+    <div padding [hidden]="clientes">
+      <ion-item>
+        No existen clientes en la base de datos
+      </ion-item>
+    </div>
+    <div padding *ngFor="let cliente of clientes" (press)="presentActionSheet(cliente)" (click)="showDetails(cliente)">
+      <ion-item>
+        <h2>{{ cliente.nombre }}</h2>
+        <h3>{{ cliente.email }}</h3>
+        <h4>{{ cliente.dni }} </h4>
+      </ion-item>
+    </div>
+  </ion-list>
 </ion-content>

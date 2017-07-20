@@ -254,15 +254,20 @@ export class PerfilPage implements OnInit {
 				correctOrientation: true
 			}
 
-			let loading = this.loadingCtrl.create({ content: 'Subiendo imagen de perfil...' })
-			loading.present()
-
-			this.camera.getPicture(cameraOptions).then(data => {				
-				this.upload(data).then(res => {
-					loading.dismiss()
-					const control = <FormControl>this.editarPerfilForm.controls['img_perfil']
-    			control.setValue(res.url)
-				}).catch(err => this.presentToast('Ha ocurrido un error inesperado'))
+			this.camera.getPicture(cameraOptions).then(data => {
+				if (data) {
+					let loading = this.loadingCtrl.create({ content: 'Subiendo imagen de perfil...' })
+					loading.present().then(() => {
+						this.upload(data).then(res => {
+							loading.dismiss()
+							const control = <FormControl>this.editarPerfilForm.controls['img_perfil']
+							control.setValue(res.url)
+						}).catch(err => {
+							loading.dismiss()
+							this.presentToast('Ha ocurrido un error inesperado')
+						})
+					})
+				}
 			})
 		}).catch(err => {
 			console.error('ERROR', err)
@@ -282,15 +287,20 @@ export class PerfilPage implements OnInit {
 				correctOrientation: true
 			}
 
-			let loading = this.loadingCtrl.create({ content: 'Subiendo imagen de perfil...' })
-			loading.present()
-
 			this.camera.getPicture(cameraOptions).then(data => {
-				this.upload(data).then(res => {
-					loading.dismiss()
-					const control = <FormControl>this.editarPerfilForm.controls['img_perfil']
-    			control.setValue(res.url)
-				}).catch(err => this.presentToast('Ha ocurrido un error inesperado'))
+				if (data) {
+					let loading = this.loadingCtrl.create({ content: 'Subiendo imagen de perfil...' })
+					loading.present().then(() => {
+						this.upload(data).then(res => {
+							loading.dismiss()
+							const control = <FormControl>this.editarPerfilForm.controls['img_perfil']
+							control.setValue(res.url)
+						}).catch(err => {
+							loading.dismiss()
+							this.presentToast('Ha ocurrido un error inesperado')
+						})
+					})
+				}
 			})
 		})
 	}

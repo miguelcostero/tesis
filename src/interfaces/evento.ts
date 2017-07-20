@@ -4,6 +4,7 @@ import { Empleado } from './empleado'
 import { Locacion } from './locacion'
 import { Cliente } from './cliente'
 import { EstadoEvento } from './estado_evento'
+import { Talento } from './talento'
 
 export interface Evento {
   id: number;
@@ -12,6 +13,7 @@ export interface Evento {
   fecha_agregado: string;
   icono: string;
   invitados: number;
+  talentos?: Talento[];
   cronograma: Array<EventoIn>;
   tipo_evento: TipoEvento;
   empleado: Empleado;

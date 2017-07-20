@@ -1,15 +1,30 @@
 <ion-header>
-
   <ion-navbar color="primary">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Locaciones</ion-title>
   </ion-navbar>
-
 </ion-header>
 
+<ion-fab right bottom>
+  <button ion-fab color="primary" (click)="goCrearLocacion()">
+    <ion-icon name="add"></ion-icon>
+  </button>
+</ion-fab>
 
-<ion-content padding>
-
+<ion-content>
+  <ion-list>
+    <div padding [hidden]="locaciones">
+      <ion-item>
+        No existen locaciones en la base de datos
+      </ion-item>
+    </div>
+    <div padding *ngFor="let locacion of locaciones" (press)="presentActionSheet(locacion)" (click)="showDetails(locacion)">
+      <ion-item>
+        <h2>{{ locacion.nombre }}</h2>
+        <p>{{ locacion.direccion }} </p>
+      </ion-item>
+    </div>
+  </ion-list>
 </ion-content>

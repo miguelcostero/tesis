@@ -23,15 +23,17 @@
           <ion-icon name="swap"></ion-icon>	
         </button>
       </ion-item-divider>
-      <ion-item text-wrap>
-        {{ l.direccion }}
-      </ion-item>
-      <ion-item>
-        Capacidad máxima de <b>{{ l.capacidad }}</b> invitados
-      </ion-item>
-      <ion-item *ngFor="let telefono of l.telefonos">
-        {{ telefono | telefono }}
-      </ion-item>
+      <div padding>
+        <ion-item text-wrap>
+          {{ l.direccion }}
+        </ion-item>
+        <ion-item>
+          Capacidad máxima de <b>{{ l.capacidad }}</b> invitados
+        </ion-item>
+        <ion-item *ngFor="let telefono of l.telefonos">
+          {{ telefono | telefono }}
+        </ion-item>
+      </div>
     </div>
   </ion-item-group>
 </ion-content>

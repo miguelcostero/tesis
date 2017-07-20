@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Detalles de locación</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header color="gris">
+      Datos de locación
+    </ion-list-header>
+    <div padding>
+      <ion-item>
+        {{ locacion?.nombre }}
+      </ion-item>
+      <ion-item>
+        Capacidad máxima de <b>{{ locacion?.capacidad }}</b> invitados
+      </ion-item>
+      <ion-item text-wrap>
+        {{ locacion?.direccion }}
+      </ion-item>
+    </div>
+
+    <ion-list-header color="gris" [hidden]="!locacion">
+      Información de contacto
+    </ion-list-header>
+    <div padding>
+      <ion-item *ngFor="let telefono of locacion?.telefonos">
+        {{ telefono | telefono }}
+        <ion-icon name="call" item-end (press)="call(telefono)"></ion-icon>
+      </ion-item>
+    </div>
+  </ion-list>
+</ion-content>

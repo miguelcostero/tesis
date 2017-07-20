@@ -8,6 +8,7 @@ import { Cliente } from '../../interfaces/cliente'
 import { TipoEvento } from '../../interfaces/tipo_evento'
 import { EstadoEvento } from '../../interfaces/estado_evento'
 import { Locacion } from '../../interfaces/locacion'
+import { Talento } from '../../interfaces/talento'
 
 import { EventosProvider } from '../../providers/eventos/eventos'
 
@@ -17,6 +18,7 @@ import { SeleccionarClienteEventoComponent } from '../../components/seleccionar-
 import { SeleccionarEstadoEventoComponent } from '../../components/seleccionar-estado-evento/seleccionar-estado-evento'
 import { SeleccionarLocacionEventoComponent } from '../../components/seleccionar-locacion-evento/seleccionar-locacion-evento'
 import { SeleccionarTipoEventoComponent } from '../../components/seleccionar-tipo-evento/seleccionar-tipo-evento'
+import { SeleccionarTalentoEventoComponent } from '../../components/seleccionar-talento-evento/seleccionar-talento-evento'
 
 import * as moment from 'moment'
 
@@ -29,19 +31,21 @@ export class CrearEventoPage implements OnInit {
   private crearEventoForm: FormGroup
   private submitted: boolean
   private iconos: Array<string>
-  private today: string = moment().format('YYYY-MM-DD')
+  private today: string
   private evento: {
     cliente: Cliente;
     tipo_evento: TipoEvento;
     estado_evento: EstadoEvento;
     locacion: Locacion;
     icono: string;
+    talentos: Talento[];
   } = {
     cliente: null,
     tipo_evento: null,
     estado_evento: null,
     locacion: null,
-    icono: 'coffee'
+    icono: 'coffee',
+    talentos: []
   }
 
   constructor(
@@ -56,6 +60,7 @@ export class CrearEventoPage implements OnInit {
     private modalCtrl: ModalController
   ) {
     this.iconos = iconos.default
+    this.today = moment().format('YYYY-MM-DD')
   }
 
   submit (isValid: boolean) {
@@ -133,11 +138,12 @@ export class CrearEventoPage implements OnInit {
       ]),
       empleado: this._fb.group({
         id: ['']
-      })
+      }),
+      talentos: this._fb.array([])
     })
   }
 
-  private removeFromCronograma (i: number) {
+  removeFromCronograma (i: number) {
     let alert = this.alertCtrl.create({
       title: `¿Desea eliminar evento interno?`,
       message: 'Este evento interno no podrá ser recuperado',
@@ -157,7 +163,69 @@ export class CrearEventoPage implements OnInit {
     alert.present()
   }
 
-  private selectCliente (cliente) {
+  initTalentos (id: number = null) {
+    return this._fb.group({
+      id: [id, [
+        <any>Validators.required
+      ]]
+    })
+  }
+
+  selectTalento () {
+    let modal = this.modalCtrl.create(SeleccionarTalentoEventoComponent)
+    modal.present()
+    modal.onDidDismiss(res => {
+      if (res) {
+        if (this.evento.talentos) {
+          console.log('betaaa')
+          let existe = false
+          this.evento.talentos.forEach(talento => {
+            if (talento.id == res.id) {
+              existe = true
+              let alert = this.alertCtrl.create({
+                title: 'Talento incluido en el evento',
+                message: 'Este talento ya ha sido incluido en este evento',
+                buttons: [ 'Ok' ]
+              })
+              alert.present()
+            }
+          })
+
+          if (existe == false) {
+            const control = <FormArray>this.crearEventoForm.controls['talentos']
+            control.push(this.initTalentos(res.id))
+            this.evento.talentos.push(res)
+          }
+        } else {
+          const control = <FormArray>this.crearEventoForm.controls['talentos']
+          control.push(this.initTalentos(res.id))
+          this.evento.talentos.push(res)
+        }
+      }
+    })
+  }
+
+  removeFromTalentos (i: number) {
+    let alert = this.alertCtrl.create({
+      title: `¿Desea eliminar este talento del evento?`,
+      buttons: [
+        {
+          text: 'Cancelar'
+        },
+        {
+          text: 'Eliminar',
+          handler: () => {
+            const control = <FormArray>this.crearEventoForm.controls['talentos']
+            control.removeAt(i)
+            this.evento.talentos.splice(i, 1)
+          }
+        }
+      ]
+    })
+    alert.present()
+  }
+
+  selectCliente (cliente) {
     let modal = this.modalCtrl.create(SeleccionarClienteEventoComponent, { cliente })
     modal.present()
     modal.onDidDismiss(res => {
@@ -169,7 +237,7 @@ export class CrearEventoPage implements OnInit {
 
   }
 
-  private selectLocacion (locacion) {
+  selectLocacion (locacion) {
     let modal = this.modalCtrl.create(SeleccionarLocacionEventoComponent, { locacion })
     modal.present()
     modal.onDidDismiss(res => {
@@ -181,7 +249,7 @@ export class CrearEventoPage implements OnInit {
 
   }
 
-  private selectEstadoEvento (estado_evento) {
+  selectEstadoEvento (estado_evento) {
     let modal = this.modalCtrl.create(SeleccionarEstadoEventoComponent, { estado_evento })
     modal.present()
     modal.onDidDismiss(res => {
@@ -193,7 +261,7 @@ export class CrearEventoPage implements OnInit {
 
   }
 
-  private selectTipoEvento (tipo_evento) {
+  selectTipoEvento (tipo_evento) {
     let modal = this.modalCtrl.create(SeleccionarTipoEventoComponent, { tipo_evento })
     modal.present()
     modal.onDidDismiss(res => {
@@ -204,7 +272,7 @@ export class CrearEventoPage implements OnInit {
     })
   }
 
-  private addToCronograma () {
+  addToCronograma () {
     const control = <FormArray>this.crearEventoForm.controls['cronograma']
     control.push(this.initCronograma())
   }

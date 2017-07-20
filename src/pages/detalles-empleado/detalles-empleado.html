@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Detalles de empleado</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header color="gris">
+      Nombre y apellido
+    </ion-list-header>
+    <div padding>
+      <ion-item>
+        {{ empleado?.nombre }}
+      </ion-item>
+      <ion-item>
+        {{ empleado?.apellido }}
+      </ion-item>
+    </div>
+
+    <ion-list-header color="gris">
+      Fecha de nacimiento
+    </ion-list-header>
+    <div padding>
+      <ion-item>
+        {{ empleado?.fecha_nacimiento | date }}
+      </ion-item>
+    </div>
+
+    <ion-list-header color="gris" [hidden]="!empleado">
+      Información de contacto
+    </ion-list-header>
+    <div padding>
+      <ion-item>
+        {{ empleado?.email }}
+      </ion-item>
+      <ion-item *ngFor="let telefono of empleado?.telefonos">
+        {{ telefono | telefono }}
+        <ion-icon name="call" item-end (press)="call(telefono)"></ion-icon>
+      </ion-item>
+    </div>
+  </ion-list>
+
+  <ion-list-header color="gris" [hidden]="!empleado">
+    Rango
+  </ion-list-header>
+  <div padding>
+    <ion-item>
+      {{ empleado?.role?.nombre }}
+    </ion-item>
+  </div>
+</ion-content>

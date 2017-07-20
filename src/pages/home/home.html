@@ -20,31 +20,34 @@
     <ion-item [hidden]="!showMessage">
       {{ showMessage }}
     </ion-item>
+    <div>
+      <ion-item-sliding *ngFor="let evento of eventos | async">
+        <ion-item (click)="showDetallesEvento(evento.id)" (press)="presentActionSheet(evento)">
+          <ion-icon [name]="evento.icono" item-start></ion-icon>
+          <h2>{{ evento.nombre }}</h2>
+          <h3>{{ evento.descripcion }}</h3>
+          <p>{{ evento.fecha_agregado | date:'d MMM y, hh:mm:ss a' }}</p>
+        </ion-item>
+        <ion-item-options side="left" [hidden]="!evento.cronograma">
+          <button ion-button color="primary" (click)="showCronograma(evento)">
+            <ion-icon name="calendar"></ion-icon>
+            Cronograma
+          </button>
+        </ion-item-options>
+        <ion-item-options side="right">
+          <button ion-button color="warning" (click)="showEditarEvento(evento)">
+            <ion-icon name="open"></ion-icon>
+            Editar
+          </button>
+          <button ion-button color="danger" (click)="deleteEvento(evento.id)" *ngIf="auth.role.id == 2 || auth.role.id == 3">
+            <ion-icon name="trash"></ion-icon>
+            Eliminar
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </div>
 
-    <ion-item-sliding *ngFor="let evento of eventos | async">
-      <ion-item (click)="showDetallesEvento(evento.id)" (press)="presentActionSheet(evento)">
-        <ion-icon [name]="evento.icono" item-start></ion-icon>
-        <h2>{{ evento.nombre }}</h2>
-        <h3>{{ evento.descripcion }}</h3>
-        <p>{{ evento.fecha_agregado | date:'d MMM y, hh:mm:ss a' }}</p>
-      </ion-item>
-      <ion-item-options side="left" [hidden]="!evento.cronograma">
-        <button ion-button color="primary" (click)="showCronograma(evento)">
-          <ion-icon name="calendar"></ion-icon>
-          Cronograma
-        </button>
-      </ion-item-options>
-      <ion-item-options side="right">
-        <button ion-button color="warning" (click)="showEditarEvento(evento)">
-          <ion-icon name="open"></ion-icon>
-          Editar
-        </button>
-        <button ion-button color="danger" (click)="deleteEvento(evento.id)" *ngIf="auth.role.id == 2 || auth.role.id == 3">
-          <ion-icon name="trash"></ion-icon>
-          Eliminar
-        </button>
-      </ion-item-options>
-    </ion-item-sliding>
+    
   </ion-list>
 
 </ion-content>

@@ -15,10 +15,26 @@ import { ClientesPage } from '../pages/clientes/clientes'
 import { LocacionesPage } from '../pages/locaciones/locaciones'
 import { TalentosPage } from '../pages/talentos/talentos'
 import { PerfilPage } from '../pages/perfil/perfil'
+
 import { EventoDetallesPage } from '../pages/evento-detalles/evento-detalles'
 import { CrearEventoPage } from '../pages/crear-evento/crear-evento'
 import { EditarEventoPage } from '../pages/editar-evento/editar-evento'
+
 import { CrearClientePage } from '../pages/crear-cliente/crear-cliente'
+import { DetallesClientePage } from '../pages/detalles-cliente/detalles-cliente'
+import { EditarClientePage } from '../pages/editar-cliente/editar-cliente'
+
+import { DetallesLocacionPage } from '../pages/detalles-locacion/detalles-locacion'
+import { CrearLocacionPage } from '../pages/crear-locacion/crear-locacion'
+import { EditarLocacionPage } from '../pages/editar-locacion/editar-locacion'
+
+import { CrearTalentoPage } from '../pages/crear-talento/crear-talento'
+import { EditarTalentoPage } from '../pages/editar-talento/editar-talento'
+import { DetallesTalentoPage } from '../pages/detalles-talento/detalles-talento'
+
+import { DetallesEmpleadoPage } from '../pages/detalles-empleado/detalles-empleado'
+import { EditarEmpleadoPage } from '../pages/editar-empleado/editar-empleado'
+import { CrearEmpleadoPage } from '../pages/crear-empleado/crear-empleado'
 
 import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
@@ -43,6 +59,8 @@ import { EstadoEventoProvider } from '../providers/estado-evento/estado-evento'
 import { LocacionesProvider } from '../providers/locaciones/locaciones'
 import { TelefonosProvider } from '../providers/telefonos/telefonos'
 import { EmpleadosProvider } from '../providers/empleados/empleados'
+import { SeleccionarTalentoEventoComponent } from '../components/seleccionar-talento-evento/seleccionar-talento-evento'
+import { TalentosProvider } from '../providers/talentos/talentos'
 
 @NgModule({
   declarations: [
@@ -59,13 +77,25 @@ import { EmpleadosProvider } from '../providers/empleados/empleados'
     CrearEventoPage,
     EditarEventoPage,
     CrearClientePage,
+    DetallesClientePage,
+    EditarClientePage,
+    DetallesLocacionPage,
+    CrearLocacionPage,
+    EditarLocacionPage,
+    CrearTalentoPage,
+    EditarTalentoPage,
+    DetallesTalentoPage,
+    DetallesEmpleadoPage,
+    EditarEmpleadoPage,
+    CrearEmpleadoPage,
     ModalCronogramaEventoComponent,
     TelefonoPipe,
     TimePipe,
     SeleccionarEstadoEventoComponent,
     SeleccionarLocacionEventoComponent,
     SeleccionarClienteEventoComponent,
-    SeleccionarTipoEventoComponent
+    SeleccionarTipoEventoComponent,
+    SeleccionarTalentoEventoComponent
   ],
   imports: [
     BrowserModule,
@@ -121,11 +151,23 @@ import { EmpleadosProvider } from '../providers/empleados/empleados'
     CrearEventoPage,
     EditarEventoPage,
     CrearClientePage,
+    DetallesClientePage,
+    EditarClientePage,
+    DetallesLocacionPage,
+    CrearLocacionPage,
+    EditarLocacionPage,
+    CrearTalentoPage,
+    EditarTalentoPage,
+    DetallesTalentoPage,
+    DetallesEmpleadoPage,
+    EditarEmpleadoPage,
+    CrearEmpleadoPage,
     ModalCronogramaEventoComponent,
     SeleccionarEstadoEventoComponent,
     SeleccionarLocacionEventoComponent,
     SeleccionarClienteEventoComponent,
-    SeleccionarTipoEventoComponent
+    SeleccionarTipoEventoComponent,
+    SeleccionarTalentoEventoComponent
   ],
   providers: [
     StatusBar,
@@ -144,7 +186,8 @@ import { EmpleadosProvider } from '../providers/empleados/empleados'
     EstadoEventoProvider,
     LocacionesProvider,
     TelefonosProvider,
-    EmpleadosProvider
+    EmpleadosProvider,
+    TalentosProvider
   ]
 })
 export class AppModule {}

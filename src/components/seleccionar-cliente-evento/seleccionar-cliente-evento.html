@@ -23,18 +23,20 @@
           <ion-icon name="swap"></ion-icon>	
         </button>
       </ion-item-divider>
-      <ion-item>
-        {{ c.dni }}
-      </ion-item>
-      <ion-item text-wrap>
-        {{ c.direccion }}
-      </ion-item>
-      <ion-item>
-        {{ c.email }}
-      </ion-item>
-      <ion-item *ngFor="let telefono of c.telefonos">
-        {{ telefono | telefono }}
-      </ion-item>
+      <div padding>
+        <ion-item>
+          {{ c.dni }}
+        </ion-item>
+        <ion-item text-wrap>
+          {{ c.direccion }}
+        </ion-item>
+        <ion-item>
+          {{ c.email }}
+        </ion-item>
+        <ion-item *ngFor="let telefono of c.telefonos">
+          {{ telefono | telefono }}
+        </ion-item>
+      </div>
     </div>
   </ion-item-group>
 </ion-content>

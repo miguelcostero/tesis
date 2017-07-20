@@ -1,18 +1,115 @@
-<!--
-  Generated template for the CrearClientePage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>CrearCliente</ion-title>
+  <ion-navbar color="primary">
+    <ion-title>Crear cliente</ion-title>
   </ion-navbar>
-
 </ion-header>
 
+<ion-content>
+  <form (ngSubmit)="submit(crearClienteForm.valid)" [formGroup]="crearClienteForm" novalidate>  
+    <ion-list>
+      <ion-list-header color="gris">
+        Datos del cliente
+      </ion-list-header>
+      <div padding>
+        <ion-item>
+					<ion-label stacked>Documento de identidad</ion-label>
+					<ion-input type="text" formControlName="dni" name="dni"></ion-input>
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="crearClienteForm.controls.dni.valid || (crearClienteForm.controls.dni.pristine && !submitted)">
+					Ingrese un número de documento de identidad válido
+        </ion-item>
+        
+        <ion-item>
+					<ion-label stacked>Nombre</ion-label>
+					<ion-input type="text" formControlName="nombre" name="nombre"></ion-input>
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="crearClienteForm.controls.nombre.valid || (crearClienteForm.controls.nombre.pristine && !submitted)">
+					Ingrese un nombre válido
+        </ion-item>
+        
+        <ion-item>
+					<ion-label stacked>Dirección</ion-label>
+					<ion-input type="text" formControlName="direccion" name="direccion"></ion-input>
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="crearClienteForm.controls.direccion.valid || (crearClienteForm.controls.direccion.pristine && !submitted)">
+					Ingrese una dirección válida
+				</ion-item>
+      </div>
 
-<ion-content padding>
+      <ion-list-header color="gris">
+        Información de contacto
+      </ion-list-header>
+      <div padding>
+        <ion-item>
+					<ion-label stacked>Correo electrónico</ion-label>
+					<ion-input type="email" formControlName="email" name="email"></ion-input>
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="crearClienteForm.controls.email.valid || (crearClienteForm.controls.email.pristine && !submitted)">
+					Ingrese una dirección de correo electrónico válida
+        </ion-item>
+      </div>
 
+      <ion-list-header color="gris">
+        Teléfonos
+      </ion-list-header>
+      <div formArrayName="telefonos">
+				<div *ngFor="let telefono of crearClienteForm.controls.telefonos.controls; let i = index">
+					<ion-list-header color="light">
+            Teléfono {{ i + 1 }}
+
+            <button ion-button outline item-end (click)="removeFromTelefonos(i)" icon-right type="button" color="danger">
+              Eliminar
+              <ion-icon name="trash"></ion-icon>	
+            </button>
+					</ion-list-header>
+					<div padding [formGroupName]="i">
+
+						<ion-item>
+              <ion-label stacked>Prefijo</ion-label>
+              <ion-input type="num" formControlName="prefijo" name="prefijo" placeholder="0268"></ion-input>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="crearClienteForm.controls.telefonos.controls[i].controls.prefijo.valid || (crearClienteForm.controls.telefonos.controls[i].controls.prefijo.pristine && !submitted)">
+              Ingrese un prefijo válido
+						</ion-item>
+						
+						<ion-item>
+              <ion-label stacked>Número</ion-label>
+              <ion-input type="num" formControlName="numero" name="numero" placeholder="0898976"></ion-input>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="crearClienteForm.controls.telefonos.controls[i].controls.numero.valid || (crearClienteForm.controls.telefonos.controls[i].controls.numero.pristine && !submitted)">
+              Ingrese un número válido
+						</ion-item>
+						
+						<ion-item>
+              <ion-label stacked>País</ion-label>
+							<ion-select formControlName="pais" name="pais" cancelText="Cancelar" okText="Seleccionar">
+								<ion-option *ngFor="let c of countries" [value]="c.code" [selected]="c.code == crearClienteForm.controls.telefonos.controls[i].controls.pais.value">{{ c.name }}</ion-option>
+							</ion-select>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="crearClienteForm.controls.telefonos.controls[i].controls.pais.valid || (crearClienteForm.controls.telefonos.controls[i].controls.pais.pristine && !submitted)">
+              Seleccione un país de la lista
+						</ion-item>
+
+					</div>
+				</div>
+
+				<div padding>
+					<ion-item [hidden]="crearClienteForm.controls.telefonos.controls.length > 0" text-wrap>
+						No existe ningún teléfono asociado a este cliente
+					</ion-item>
+				</div>
+
+				<a ion-button full color="danger" outline icon-right (click)="addToTelefonos()">
+					Agregar número de teléfono
+					<ion-icon name="add"></ion-icon>
+				</a>
+			</div>
+    </ion-list>
+
+    <div padding submit>
+			<button ion-button type="submit" block color="secondary" [disabled]="submitted">
+				Crear cliente
+			</button>
+		</div>
+  </form>
 </ion-content>

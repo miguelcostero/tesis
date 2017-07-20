@@ -1,0 +1,102 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Crear talento</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="submit(crearTalentoForm.valid)" [formGroup]="crearTalentoForm" novalidate>  
+    <ion-list>
+      <ion-list-header color="gris">
+        Datos de talento
+      </ion-list-header>
+      <div padding>        
+        <ion-item>
+					<ion-label stacked>Nombre</ion-label>
+					<ion-input type="text" formControlName="nombre" name="nombre" placeholder="Ronald Borjas"></ion-input>
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="crearTalentoForm.controls.nombre.valid || (crearTalentoForm.controls.nombre.pristine && !submitted)">
+					Ingrese un nombre válido
+        </ion-item>
+
+        <ion-item>
+					<ion-label stacked>Correo electrónico</ion-label>
+					<ion-input type="text" formControlName="email" name="email" placeholder="ejemplo@ejemplo.com"></ion-input>
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="crearTalentoForm.controls.email.valid || (crearTalentoForm.controls.email.pristine && !submitted)">
+					Ingrese un correo electrónico válido
+				</ion-item>
+        
+        <ion-item>
+					<ion-label stacked>Notas</ion-label>
+					<ion-input type="text" formControlName="notas" name="notas" placeholder="Nota acerca del talento"></ion-input>
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="crearTalentoForm.controls.notas.valid || (crearTalentoForm.controls.notas.pristine && !submitted)">
+					Ingrese una nota válida
+				</ion-item>
+      </div>
+
+      <ion-list-header color="gris">
+        Teléfonos
+      </ion-list-header>
+      <div formArrayName="telefonos">
+				<div *ngFor="let telefono of crearTalentoForm.controls.telefonos.controls; let i = index">
+					<ion-list-header color="light">
+            Teléfono {{ i + 1 }}
+
+            <button ion-button outline item-end (click)="removeFromTelefonos(i)" icon-right type="button" color="danger">
+              Eliminar
+              <ion-icon name="trash"></ion-icon>	
+            </button>
+					</ion-list-header>
+					<div padding [formGroupName]="i">
+
+						<ion-item>
+              <ion-label stacked>Prefijo</ion-label>
+              <ion-input type="num" formControlName="prefijo" name="prefijo" placeholder="0268"></ion-input>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="crearTalentoForm.controls.telefonos.controls[i].controls.prefijo.valid || (crearTalentoForm.controls.telefonos.controls[i].controls.prefijo.pristine && !submitted)">
+              Ingrese un prefijo válido
+						</ion-item>
+						
+						<ion-item>
+              <ion-label stacked>Número</ion-label>
+              <ion-input type="num" formControlName="numero" name="numero" placeholder="0898976"></ion-input>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="crearTalentoForm.controls.telefonos.controls[i].controls.numero.valid || (crearTalentoForm.controls.telefonos.controls[i].controls.numero.pristine && !submitted)">
+              Ingrese un número válido
+						</ion-item>
+						
+						<ion-item>
+              <ion-label stacked>País</ion-label>
+							<ion-select formControlName="pais" name="pais" cancelText="Cancelar" okText="Seleccionar">
+								<ion-option *ngFor="let c of countries" [value]="c.code" [selected]="c.code == crearTalentoForm.controls.telefonos.controls[i].controls.pais.value">{{ c.name }}</ion-option>
+							</ion-select>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="crearTalentoForm.controls.telefonos.controls[i].controls.pais.valid || (crearTalentoForm.controls.telefonos.controls[i].controls.pais.pristine && !submitted)">
+              Seleccione un país de la lista
+						</ion-item>
+
+					</div>
+				</div>
+
+				<div padding>
+					<ion-item [hidden]="crearTalentoForm.controls.telefonos.controls.length > 0" text-wrap>
+						No existe ningún teléfono asociado a este talento
+					</ion-item>
+				</div>
+
+				<a ion-button full color="danger" outline icon-right (click)="addToTelefonos()">
+					Agregar número de teléfono
+					<ion-icon name="add"></ion-icon>
+				</a>
+			</div>
+    </ion-list>
+
+    <div padding submit>
+			<button ion-button type="submit" block color="secondary" [disabled]="submitted">
+				Crear talento
+			</button>
+		</div>
+  </form>
+</ion-content>

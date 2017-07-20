@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Detalles del talento</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header color="gris">
+      Datos de talento
+    </ion-list-header>
+    <div padding>
+      <ion-item>
+        {{ talento?.nombre }}
+      </ion-item>
+      <ion-item text-wrap [hidden]="!talento?.notas">
+        {{ talento?.notas }}
+      </ion-item>
+    </div>
+
+    <ion-list-header color="gris" [hidden]="!talento">
+      Información de contacto
+    </ion-list-header>
+    <div padding>
+      <ion-item>
+        {{ talento?.email }}
+      </ion-item>
+      <ion-item *ngFor="let telefono of talento?.telefonos">
+        {{ telefono | telefono }}
+        <ion-icon name="call" item-end (press)="call(telefono)"></ion-icon>
+      </ion-item>
+    </div>
+  </ion-list>
+</ion-content>

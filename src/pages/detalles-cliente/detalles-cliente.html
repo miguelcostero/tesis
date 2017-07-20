@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Detalles de cliente</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header color="gris">
+      Datos del cliente
+    </ion-list-header>
+    <div padding>
+      <ion-item>
+        {{ cliente?.dni }}
+      </ion-item>
+      <ion-item>
+        {{ cliente?.nombre }}
+      </ion-item>
+      <ion-item text-wrap>
+        {{ cliente?.direccion }}
+      </ion-item>
+    </div>
+
+    <ion-list-header color="gris">
+      Información de contacto
+    </ion-list-header>
+    <div padding>
+      <ion-item>
+        {{ cliente?.email }}
+      </ion-item>
+      <ion-item *ngFor="let telefono of cliente?.telefonos">
+        {{ telefono | telefono }}
+        <ion-icon name="call" item-end (press)="call(telefono)"></ion-icon>
+      </ion-item>
+    </div>
+  </ion-list>
+</ion-content>

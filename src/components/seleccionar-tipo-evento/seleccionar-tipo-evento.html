@@ -19,16 +19,18 @@
 </ion-fab>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let te of tipos_evento | async">
-      <div (click)="selectTipoEvento(te)">
-        {{ te.nombre }}
-      </div>
-      
-      <button ion-button outline item-end (click)="removeTipoEvento(te.id)" icon-right type="button" color="danger">
-        Eliminar
-        <ion-icon name="trash"></ion-icon>	
-      </button>
-    </ion-item>
-  </ion-list>
+  <div padding>
+    <ion-list>
+      <ion-item *ngFor="let te of tipos_evento | async">
+        <div (click)="selectTipoEvento(te)">
+          {{ te.nombre }}
+        </div>
+        
+        <button ion-button outline item-end (click)="removeTipoEvento(te.id)" icon-right type="button" color="danger">
+          Eliminar
+          <ion-icon name="trash"></ion-icon>	
+        </button>
+      </ion-item>
+    </ion-list>
+  </div>
 </ion-content>

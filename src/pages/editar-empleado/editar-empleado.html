@@ -1,0 +1,152 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Editar empleado</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="submit(editarEmpleadoForm.valid)" [formGroup]="editarEmpleadoForm" novalidate>  
+    <ion-list>
+      <ion-list-header color="gris">
+        Datos de empleado
+      </ion-list-header>
+      <div padding>
+        <ion-item>
+					<ion-label stacked>Nombre</ion-label>
+					<ion-input type="text" formControlName="nombre" name="nombre" placeholder="Juan"></ion-input>
+        </ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="editarEmpleadoForm.controls.nombre.valid || (editarEmpleadoForm.controls.nombre.pristine && !submitted)">
+					Ingrese un nombre válido
+        </ion-item>
+
+        <ion-item>
+					<ion-label stacked>Apellido</ion-label>
+					<ion-input type="text" formControlName="apellido" name="apellido" placeholder="Perez"></ion-input>
+        </ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="editarEmpleadoForm.controls.apellido.valid || (editarEmpleadoForm.controls.apellido.pristine && !submitted)">
+					Ingrese un apellido válido
+        </ion-item>
+        
+        <ion-item>
+					<ion-label stacked>Fecha de nacimiento</ion-label>
+					<ion-datetime displayFormat="DD MMMM YYYY" formControlName="fecha_nacimiento" name="fecha_nacimiento" cancelText="Cancelar" doneText="Seleccionar" [max]="maxAge"></ion-datetime>
+        </ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="editarEmpleadoForm.controls.fecha_nacimiento.valid || (editarEmpleadoForm.controls.fecha_nacimiento.pristine && !submitted)">
+					Ingrese su fecha de nacimiento
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="!editarEmpleadoForm.controls.fecha_nacimiento.errors?.not18">
+					Usted debe tener al menos 18 años
+        </ion-item>
+        
+         <ion-item formGroupName="role">
+          <ion-label stacked>Rango</ion-label>
+            <ion-select formControlName="id" name="id" cancelText="Cancelar" okText="Seleccionar">
+                <ion-option *ngFor="let role of roles" [value]="role.id" [selected]="role.id == editarEmpleadoForm.controls.role.controls.id.value">{{ role.nombre }}</ion-option>
+            </ion-select>       
+        </ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="editarEmpleadoForm.controls.role.controls.id.valid || (editarEmpleadoForm.controls.role.controls.id.pristine && !submitted)">
+					Porfavor, seleccione un rango para este empleado
+        </ion-item>
+      </div>
+
+      <ion-list-header color="gris">
+				Datos de autentificación
+			</ion-list-header>
+			<div padding>
+				<ion-item>
+					<ion-label stacked>Correo electrónico</ion-label>
+					<ion-input type="email" formControlName="email" name="email" placeholder="juan@perez.com"></ion-input>
+				</ion-item>
+				<ion-item class="error-message" text-wrap [hidden]="editarEmpleadoForm.controls.email.valid || (editarEmpleadoForm.controls.email.pristine && !submitted)">
+					Ingrese un correo electrónico válido
+				</ion-item>
+			</div>
+
+      <ion-list-header color="gris">
+        Imagen de perfil
+      </ion-list-header>
+			<div padding>
+				<img [src]="editarEmpleadoForm.controls.img_perfil.value" ion-item img-perfil>
+
+				<ion-grid>
+					<ion-row>
+						<ion-col col-6>
+							<a ion-button block color="warning" icon-right (click)="abrirCamara()">
+								Abrir cámara
+								<ion-icon name="camera"></ion-icon>
+							</a>
+						</ion-col>
+						<ion-col col-6>
+							<a ion-button block color="danger" icon-right (click)="abrirGaleria()">
+								Abrir galeria
+								<ion-icon name="image"></ion-icon>
+							</a>
+						</ion-col>
+					</ion-row>
+				</ion-grid>
+      </div>
+
+      <ion-list-header color="gris">
+        Teléfonos
+      </ion-list-header>
+      <div formArrayName="telefonos">
+				<div *ngFor="let telefono of editarEmpleadoForm.controls.telefonos.controls; let i = index">
+					<ion-list-header color="light">
+            Teléfono {{ i + 1 }}
+
+            <button ion-button outline item-end (click)="removeFromTelefonos(i)" icon-right type="button" color="danger">
+              Eliminar
+              <ion-icon name="trash"></ion-icon>	
+            </button>
+					</ion-list-header>
+					<div padding [formGroupName]="i">
+
+						<ion-item>
+              <ion-label stacked>Prefijo</ion-label>
+              <ion-input type="num" formControlName="prefijo" name="prefijo" placeholder="0268"></ion-input>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="editarEmpleadoForm.controls.telefonos.controls[i].controls.prefijo.valid || (editarEmpleadoForm.controls.telefonos.controls[i].controls.prefijo.pristine && !submitted)">
+              Ingrese un prefijo válido
+						</ion-item>
+						
+						<ion-item>
+              <ion-label stacked>Número</ion-label>
+              <ion-input type="num" formControlName="numero" name="numero" placeholder="0898976"></ion-input>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="editarEmpleadoForm.controls.telefonos.controls[i].controls.numero.valid || (editarEmpleadoForm.controls.telefonos.controls[i].controls.numero.pristine && !submitted)">
+              Ingrese un número válido
+						</ion-item>
+						
+						<ion-item>
+              <ion-label stacked>País</ion-label>
+							<ion-select formControlName="pais" name="pais" cancelText="Cancelar" okText="Seleccionar">
+								<ion-option *ngFor="let c of countries" [value]="c.code" [selected]="c.code == editarEmpleadoForm.controls.telefonos.controls[i].controls.pais.value">{{ c.name }}</ion-option>
+							</ion-select>
+            </ion-item>
+            <ion-item class="error-message" text-wrap [hidden]="editarEmpleadoForm.controls.telefonos.controls[i].controls.pais.valid || (editarEmpleadoForm.controls.telefonos.controls[i].controls.pais.pristine && !submitted)">
+              Seleccione un país de la lista
+						</ion-item>
+
+					</div>
+				</div>
+
+				<div padding>
+					<ion-item [hidden]="editarEmpleadoForm.controls.telefonos.controls.length > 0" text-wrap>
+						No existe ningún teléfono asociado a este empleado
+					</ion-item>
+				</div>
+
+				<a ion-button full color="danger" outline icon-right (click)="addToTelefonos()">
+					Agregar número de teléfono
+					<ion-icon name="add"></ion-icon>
+				</a>
+			</div>
+    </ion-list>
+
+    <div padding submit>
+			<button ion-button type="submit" block color="secondary" [disabled]="submitted">
+				Editar empleado
+			</button>
+		</div>
+  </form>
+</ion-content>

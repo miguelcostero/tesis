@@ -13,6 +13,7 @@ import { SeleccionarClienteEventoComponent } from '../../components/seleccionar-
 import { SeleccionarEstadoEventoComponent } from '../../components/seleccionar-estado-evento/seleccionar-estado-evento'
 import { SeleccionarLocacionEventoComponent } from '../../components/seleccionar-locacion-evento/seleccionar-locacion-evento'
 import { SeleccionarTipoEventoComponent } from '../../components/seleccionar-tipo-evento/seleccionar-tipo-evento'
+import { SeleccionarTalentoEventoComponent } from '../../components/seleccionar-talento-evento/seleccionar-talento-evento'
 
 import * as moment from 'moment'
 
@@ -26,7 +27,7 @@ export class EditarEventoPage implements OnInit {
   private editarEventoForm: FormGroup
   private submitted: boolean
   private iconos: Array<string>
-  private today: string = moment().format('YYYY-MM-DD')
+  private today: string
 
   constructor(
     private navCtrl: NavController, 
@@ -42,6 +43,7 @@ export class EditarEventoPage implements OnInit {
   ) {
     this.evento = this.navParams.get('evento')
     this.iconos = iconos.default
+    this.today = moment().format('YYYY-MM-DD')
   }
 
   editar (model: Evento, isValid: boolean) {
@@ -87,6 +89,47 @@ export class EditarEventoPage implements OnInit {
     })
   }
 
+  initTalentos (id: number = null) {
+    return this._fb.group({
+      id: [id, [
+        <any>Validators.required
+      ]]
+    })
+  }
+
+  selectTalento () {
+    let modal = this.modalCtrl.create(SeleccionarTalentoEventoComponent)
+    modal.present()
+    modal.onDidDismiss(res => {
+      if (res) {
+        if (this.evento.talentos.length > 0) {
+          let existe = false
+          this.evento.talentos.forEach(talento => {
+            if (talento.id == res.id) {
+              existe = true
+              let alert = this.alertCtrl.create({
+                title: 'Talento incluido en el evento',
+                message: 'Este talento ya ha sido incluido en este evento',
+                buttons: [ 'Ok' ]
+              })
+              alert.present()
+            }
+          })
+
+          if (existe == false) {
+            const control = <FormArray>this.editarEventoForm.controls['talentos']
+            control.push(this.initTalentos(res.id))
+            this.evento.talentos.push(res)
+          }
+        } else {
+          this.evento.talentos.push(res)
+          const control = <FormArray>this.editarEventoForm.controls['talentos']
+          control.push(this.initTalentos(res.id))
+        }
+      }
+    })
+  }
+
   addToCronograma () {
     const control = <FormArray>this.editarEventoForm.controls['cronograma']
     control.push(this.initCronograma())
@@ -99,7 +142,6 @@ export class EditarEventoPage implements OnInit {
       this.evento.cliente = res
       this.cambiarIdOnSeleccionar('cliente', res.id)
     })
-
   }
 
   selectLocacion (locacion) {
@@ -151,8 +193,29 @@ export class EditarEventoPage implements OnInit {
     alert.present()
   }
 
+  removeFromTalentos (i: number) {
+    let alert = this.alertCtrl.create({
+      title: `¿Desea eliminar este talento del evento?`,
+      buttons: [
+        {
+          text: 'Cancelar'
+        },
+        {
+          text: 'Eliminar',
+          handler: () => {
+            const control = <FormArray>this.editarEventoForm.controls['talentos']
+            control.removeAt(i)
+            this.evento.talentos.splice(i, 1)
+          }
+        }
+      ]
+    })
+    alert.present()
+  }
+
   ngOnInit () {
     let cronograma = []
+    let talentos = []
 
     if (this.evento.cronograma) {
       this.evento.cronograma.forEach(ev => {
@@ -178,6 +241,12 @@ export class EditarEventoPage implements OnInit {
       })
     } else {
       cronograma.push(this.initCronograma())
+    }
+
+    if (this.evento.talentos) {
+      this.evento.talentos.forEach(t => {
+        talentos.push(this.initTalentos(t.id))
+      })
     }
 
     this.editarEventoForm = this._fb.group({
@@ -222,7 +291,8 @@ export class EditarEventoPage implements OnInit {
           <any>Validators.required
         ]]
       }),
-      cronograma: this._fb.array(cronograma)
+      cronograma: this._fb.array(cronograma),
+      talentos: this._fb.array(talentos)
     })
   }
 

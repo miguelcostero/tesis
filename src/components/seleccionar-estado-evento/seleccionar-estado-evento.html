@@ -20,15 +20,17 @@
 
 <ion-content>
   <ion-list>
-    <ion-item *ngFor="let ee of estados_eventos">
-      <div (click)="selectEstadoEvento(ee)">
-        {{ ee.nombre }}
-      </div>
-      
-      <button ion-button outline item-end (click)="removeEstadoEvento(ee.id)" icon-right type="button" color="danger">
-        Eliminar
-        <ion-icon name="trash"></ion-icon>	
-      </button>
-    </ion-item>
+    <div padding>
+      <ion-item *ngFor="let ee of estados_eventos">
+        <div (click)="selectEstadoEvento(ee)">
+          {{ ee.nombre }}
+        </div>
+        
+        <button ion-button outline item-end (click)="removeEstadoEvento(ee.id)" icon-right type="button" color="danger">
+          Eliminar
+          <ion-icon name="trash"></ion-icon>	
+        </button>
+      </ion-item>
+    </div>
   </ion-list>
 </ion-content>

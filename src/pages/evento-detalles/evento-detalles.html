@@ -11,75 +11,123 @@
     <ion-list-header color="gris">
       Datos básicos
     </ion-list-header>
-    <ion-item>
-      {{ e.nombre }}
-    </ion-item>
-    <ion-item>
-      {{ e.descripcion }}
-    </ion-item>
-    <ion-item>
-      {{ e.invitados }} invitados
-    </ion-item>
+    <div padding>
+      <ion-item>
+        {{ e.nombre }}
+      </ion-item>
+      <ion-item>
+        {{ e.descripcion }}
+      </ion-item>
+      <ion-item>
+        {{ e.invitados }} invitados
+      </ion-item>
+    </div>
 
     <ion-list-header color="gris">
       Estado del evento
     </ion-list-header>
-    <ion-item>
-      {{ e.estado_evento.nombre }}
-    </ion-item>
+    <div padding>
+      <ion-item>
+        {{ e.estado_evento.nombre }}
+      </ion-item>
+    </div>
 
     <ion-list-header color="gris">
       Cliente
     </ion-list-header>
-    <ion-item>
-      {{ e.cliente.dni }}
-    </ion-item>
-    <ion-item>
-      {{ e.cliente.nombre }}
-    </ion-item>
-    <ion-item text-wrap>
-      {{ e.cliente.direccion }}
-    </ion-item>
-    <ion-item>
-      {{ e.cliente.email }}
-    </ion-item>
-    <ion-item *ngFor="let telefono of e.cliente.telefonos" (press)="call(telefono)">
-      {{ telefono | telefono }}
-    </ion-item>
+    <div padding>
+      <ion-item>
+        {{ e.cliente.dni }}
+      </ion-item>
+      <ion-item>
+        {{ e.cliente.nombre }}
+      </ion-item>
+      <ion-item text-wrap>
+        {{ e.cliente.direccion }}
+      </ion-item>
+      <ion-item>
+        {{ e.cliente.email }}
+      </ion-item>
+      <ion-item *ngFor="let telefono of e.cliente.telefonos">
+        {{ telefono | telefono }}
+        <ion-icon name="call" item-end (press)="call(telefono)"></ion-icon>
+      </ion-item>
+    </div>
+
+    <ion-list-header color="gris" [hidden]="!e.talentos">
+      Talentos
+    </ion-list-header>
+    <div *ngFor="let talento of e.talentos; let i = index">
+      <ion-list-header color="light">
+        Talento {{ i + 1 }}
+      </ion-list-header>
+      <div padding>
+        <ion-item>
+          {{ talento?.nombre }}
+        </ion-item>
+        <ion-item>
+          {{ talento?.email }}
+        </ion-item>
+        <ion-item [hidden]="!talento?.notas">
+          {{ talento?.notas }}
+        </ion-item>
+        <ion-item *ngFor="let telefono of talento.telefonos">
+          {{ telefono | telefono }}
+          <ion-icon name="call" item-end (press)="call(telefono)"></ion-icon>          
+        </ion-item>
+      </div>
+    </div>
 
     <ion-list-header color="gris" [hidden]="!e.cronograma">
       Cronograma
     </ion-list-header>
-    <ion-item *ngFor="let c of e.cronograma" text-wrap>
-      <h3>{{ c.descripcion }}</h3>
-      <h3>{{ c.fecha | date:'d MMM y' }} a las {{ c.hora | time }}</h3>
-      <p [hidden]="!c.notas">
-        <b>NOTA</b> {{ c.notas }}
-      </p>
-    </ion-item>
+    <div *ngFor="let c of e.cronograma; let i = index">
+      <ion-list-header color="light">
+        Evento interno {{ i +1 }}
+      </ion-list-header>
+      <div padding>
+        <ion-item>
+          {{ c.descripcion }}
+        </ion-item>
+        <ion-item>
+          {{ c.fecha | date:'d MMM y' }} a las {{ c.hora | time }}
+        </ion-item>
+        <ion-item [hidden]="!c.notas" text-wrap>
+          <h2>Notas</h2>
+          <p>
+            {{ c.notas }}
+          </p>
+        </ion-item>
+      </div>
+    </div>
 
     <ion-list-header color="gris">
       Locación
     </ion-list-header>
-    <ion-item>
-      {{ e.locacion.nombre }}
-    </ion-item>
-    <ion-item text-wrap>
-      {{ e.locacion.direccion }}
-    </ion-item>
-    <ion-item>
-      Capacidad máxima de {{ e.locacion.capacidad }} invitados
-    </ion-item>
-    <ion-item *ngFor="let telefono of e.locacion.telefonos" (press)="call(telefono)">
-      {{ telefono | telefono }}
-    </ion-item>
+    <div padding>
+      <ion-item>
+        {{ e.locacion.nombre }}
+      </ion-item>
+      <ion-item text-wrap>
+        {{ e.locacion.direccion }}
+      </ion-item>
+      <ion-item>
+        Capacidad máxima de {{ e.locacion.capacidad }} invitados
+      </ion-item>
+      <ion-item *ngFor="let telefono of e.locacion.telefonos">
+        {{ telefono | telefono }}
+        <ion-icon name="call" item-end (press)="call(telefono)"></ion-icon>
+      </ion-item>
+    </div>
 
     <ion-list-header color="gris">
       Creado por
     </ion-list-header>
-    <ion-item text-wrap>
-      {{ e.empleado.nombre }} {{ e.empleado.apellido }} ({{ e.empleado.email }}) <br>
-      {{ e.fecha_agregado | date:'d MMM y, hh:mm:ss a' }}
-    </ion-item>
+    <div padding>
+      <ion-item text-wrap>
+        {{ e.empleado.nombre }} {{ e.empleado.apellido }} ({{ e.empleado.email }}) <br>
+        {{ e.fecha_agregado | date:'d MMM y, hh:mm:ss a' }}
+      </ion-item>
+    </div>
   </ion-list>
 </ion-content>
