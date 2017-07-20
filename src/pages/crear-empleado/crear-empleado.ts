@@ -24,11 +24,9 @@ import * as countries from '../../enviroment/countries'
 })
 export class CrearEmpleadoPage {
   private crearEmpleadoForm: FormGroup
-	private perfil: Empleado
 	private submitted: boolean
-	private countries: Array<{name:string; code:string;}> = countries.default
+	private countries: Array<{name:string; code:string;}>
 	private maxAge
-  private picture: string = 'asjdlksajd'
   private roles: Array<{ id: number; nombre: string; }>
 	
 	constructor(
@@ -43,6 +41,7 @@ export class CrearEmpleadoPage {
 		private camera: Camera,
 		private events: Events
 	) {
+		this.countries = countries.default
     this.maxAge = moment().subtract(18, 'years').format('YYYY-MM-DD')
     this.roles = [
       {
@@ -66,7 +65,12 @@ export class CrearEmpleadoPage {
 			let loading = this.loadingCtrl.create()
       loading.present().then(() => {
         this.storage.get('auth').then(auth => {
-          const model: Empleado = this.crearEmpleadoForm.value
+					const model: Empleado = this.crearEmpleadoForm.value
+					
+					if (model.password) {
+						const control = <FormControl>this.crearEmpleadoForm.controls['password']
+						control.setValue(md5(model.password))
+					}
           
           this.empleadosProvider.createEmpleado(model, auth.token).subscribe(res => {
             this.events.publish('empleado:created', Date.now())
@@ -153,12 +157,12 @@ export class CrearEmpleadoPage {
     })
   }
   
-  private addToTelefonos () {
+  addToTelefonos () {
     const control = <FormArray>this.crearEmpleadoForm.controls['telefonos']
     control.push(this.initTelefono())
 	}
 	
-	private removeFromTelefonos (i: number) {
+	removeFromTelefonos (i: number) {
     let alert = this.alertCtrl.create({
       title: `¿Desea eliminar este número de teléfono?`,
       message: 'Una vez eliminado, este no podrá ser recuperado',
@@ -188,7 +192,7 @@ export class CrearEmpleadoPage {
     toast.present()
 	}
 	
-	private abrirGaleria () {
+	abrirGaleria () {
 		this.platform.ready().then(() => {
 			let cameraOptions: CameraOptions = {
 				sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
@@ -221,7 +225,7 @@ export class CrearEmpleadoPage {
 		})
 	}
   
-	private abrirCamara () {
+	abrirCamara () {
 		this.platform.ready().then(() => {
 			let cameraOptions: CameraOptions = {
 				sourceType: this.camera.PictureSourceType.CAMERA,
