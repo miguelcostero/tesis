@@ -1,10 +1,11 @@
 import { Component, ViewChild } from '@angular/core'
-import { Nav, Platform, Events } from 'ionic-angular'
+import { Nav, Platform, Events, AlertController } from 'ionic-angular'
 import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
 import { HeaderColor } from '@ionic-native/header-color'
 import { Storage } from '@ionic/storage'
 import * as firebase from 'firebase'
+import { Push, PushToken } from '@ionic/cloud-angular'
 
 import { AuthProvider } from '../providers/auth/auth'
 import { EmpleadosProvider } from '../providers/empleados/empleados'
@@ -41,13 +42,14 @@ export class MyApp {
     private headerColor: HeaderColor,
     private events: Events,
     private _empleados: EmpleadosProvider,
-    private storage: Storage
+    private storage: Storage,
+    public push: Push,
+    private alertCtrl: AlertController
   ) {
     this.initializeApp()
     this.checkLogin()
     this.subscribeToEvents()
 
-    // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Inicio', component: HomePage },
       { title: 'Perfil', component: PerfilPage },
@@ -57,6 +59,32 @@ export class MyApp {
     ]
 
     this.empleadosPage = { title: 'Empleados', component: EmpleadosPage }
+
+    this.platform.ready().then(() => {
+      this.registerToken()
+      this.getNotifications()
+    })
+  }
+
+  private registerToken(){
+    this.push.register().then((t: PushToken) => {
+      return this.push.saveToken(t, {
+        ignore_user: true
+      })
+    }).then((t: PushToken) => {
+      console.log('Token saved:', t.token)
+    })
+  }
+
+  private getNotifications(){
+    this.push.rx.notification().subscribe(msg => {
+      let alert = this.alertCtrl.create({
+        title: msg.title,
+        message: msg.text,
+        buttons: ['Cerrar']
+      })
+      alert.present()
+    })
   }
 
   private initializeFirebase () {

@@ -8,7 +8,6 @@ import { Empleado } from '../../interfaces/empleado'
 @Injectable()
 export class PerfilProvider {
   private apiUrl = `http://api.talentproducciones.com.ve/v1/empleados`
-  // private empleado: Empleado
 
   constructor(
     private http: Http
@@ -21,11 +20,12 @@ export class PerfilProvider {
     )
   }
 
-  updateEmpleado (id: number, token: string, data: Empleado, password: string): Observable<any> {
+  updateEmpleado (id: number, token: string, data: Empleado, email: string, password: string): Observable<any> {
     return this.http.put(
       `${this.apiUrl}/${id}/`,
       {
         empleado: data,
+        email,
         password
       },
       { headers: new Headers({ 'Access-Token': token }) }

@@ -35,8 +35,10 @@ export class ClientesPage implements OnInit {
   }
 
   ionViewDidLoad() {
-    this.initializeClientes()
-    // this.createLoader()
+    this.createLoader()
+    this.loading.present().then(() => {
+      this.initializeClientes().then(() => this.loading.dismiss())
+    })
   }
 
   presentActionSheet (cliente: Cliente) {
@@ -106,21 +108,7 @@ export class ClientesPage implements OnInit {
     this.navCtrl.push(CrearClientePage)
   }
 
-  private initializeClientes () {
-    this.createLoader()
-    this.loading.present().then(() => {
-      this._storage.get('auth').then(auth => {
-        this._clintes.getClientes(auth.token).map(res => res.json() as Cliente[]).subscribe(clientes => {
-          this.clientes = clientes
-        }, err => {
-          this.presentToast('Ha ocurrido un error inesperado, porfavor intente de nuevo')
-          console.error('ERROR', err)
-        }, () => this.loading.dismiss())
-      })
-    })
-  }
-
-  private initializeClientesWithoutLoader (): Promise<any> {
+  private initializeClientes (): Promise<any> {
     return new Promise((resolve, reject) => {
       this._storage.get('auth').then(auth => {
         this._clintes.getClientes(auth.token).map(res => res.json() as Cliente[]).subscribe(clientes => {
@@ -146,21 +134,16 @@ export class ClientesPage implements OnInit {
       this.initializeClientes()
     })
 
-    this._events.subscribe('cliente:deleted', (id, time) => {
-      this.createLoader()
-      this.loading.present().then(() => {
-        console.log(`Cliente ${id} eliminado a las ${time}`)
+    this._events.subscribe('cliente:deleted', (id, time) => {  
+      console.log(`Cliente ${id} eliminado a las ${time}`)
 
-        this._storage.get('auth').then(auth => {
-          this._clintes.deleteCliente(id, auth.token).subscribe(res => {
-            this.presentToast('Cliente eliminado satisfactoriamente')
-            this.initializeClientesWithoutLoader().then(() => {
-              this.loading.dismiss()
-            })
-          }, err => {
-            this.presentToast('Ha ocurrido un error inesperado')
-            console.error('ERROR', err)
-          })
+      this._storage.get('auth').then(auth => {
+        this._clintes.deleteCliente(id, auth.token).subscribe(res => {
+          this.presentToast('Cliente eliminado satisfactoriamente')
+          this.initializeClientes()
+        }, err => {
+          this.presentToast('Ha ocurrido un error inesperado')
+          console.error('ERROR', err)
         })
       })
     })

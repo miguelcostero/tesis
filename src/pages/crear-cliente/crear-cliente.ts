@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { IonicPage, NavController, AlertController, ToastController, Events } from 'ionic-angular'
+import { IonicPage, NavController, AlertController, ToastController, Events, LoadingController } from 'ionic-angular'
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms'
 import { Storage } from '@ionic/storage'
 
@@ -8,6 +8,7 @@ import { Cliente } from '../../interfaces/cliente'
 import { ClientesProvider } from '../../providers/clientes/clientes'
 
 import { NumberValidator } from '../../validators/number/number'
+import { DniValidator } from '../../validators/dni/dni'
 
 import * as countries from '../../enviroment/countries'
 
@@ -28,20 +29,25 @@ export class CrearClientePage implements OnInit {
     private alertCtrl: AlertController,
     private toast: ToastController,
     private storage: Storage,
-    private _events: Events
+    private _events: Events,
+    private loadingCtrl: LoadingController
   ) {}
 
   submit (isValid: boolean) {
     if (isValid) {
       this.submitted = true
-      const model: Cliente = this.crearClienteForm.value
-      this.storage.get('auth').then(auth => {
-        this._clientes.createCliente(model, auth.token).subscribe(res => {
-          this._events.publish('cliente:created', Date.now())
-          this.navCtrl.pop()
-          this.presentToast(`Cliente creado satisfactoriamente`)
-        }, err => {
-          this.presentToast('Ha ocurrido un error procesando su solicitud')
+      let loading = this.loadingCtrl.create()
+      loading.present().then(() => {
+        const model: Cliente = this.crearClienteForm.value
+        this.storage.get('auth').then(auth => {
+          this._clientes.createCliente(model, auth.token).subscribe(res => {
+            this._events.publish('cliente:created', Date.now())
+            this.navCtrl.pop()
+            this.presentToast(`Cliente creado satisfactoriamente`)
+          }, err => {
+            loading.dismiss()
+            this.presentToast('Ha ocurrido un error procesando su solicitud')
+          }, () => loading.dismiss())
         })
       })
     } else {
@@ -63,8 +69,7 @@ export class CrearClientePage implements OnInit {
       ]],
       dni: ['', [
         <any>Validators.required,
-        <any>Validators.minLength(10),
-        <any>Validators.maxLength(20)
+        <any>DniValidator.isValid
       ]],
       direccion: ['', [
         <any>Validators.required,

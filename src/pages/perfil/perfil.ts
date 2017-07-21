@@ -30,9 +30,8 @@ export class PerfilPage implements OnInit {
 	private editarPerfilForm: FormGroup
 	private perfil: Empleado
 	private submitted: boolean
-	private countries: Array<{name:string; code:string;}> = countries.default
-	private maxAge = moment().subtract(18, 'years').format('YYYY-MM-DD')
-	private picture: string = 'asjdlksajd'
+	private countries: Array<{name:string; code:string;}>
+	private maxAge
 	
 	constructor(
 		private navCtrl: NavController, 
@@ -46,7 +45,10 @@ export class PerfilPage implements OnInit {
 		private camera: Camera,
 		private events: Events,
 		private telefonosProvider: TelefonosProvider
-	) {}
+	) {
+		this.countries = countries.default
+		this.maxAge = moment().subtract(18, 'years').format('YYYY-MM-DD')
+	}
 								
 	submit (isValid: boolean) {
 		this.submitted = true
@@ -69,28 +71,36 @@ export class PerfilPage implements OnInit {
 					{
 						text: 'Guardar',
 						handler: data => {
+							if (!data.password) {
+								this.presentToast('Para continuar con los cambios debe introducir una su actual contraseña')
+								return false
+							}
+							if (data.password.length < 6) {
+								this.presentToast('Su contraseña debe contener mínimo 6 caracteres')
+								return false
+							}
+
 							let loading = this.loadingCtrl.create()
-							loading.present()
+							loading.present().then(() => {
+								this.storage.get('auth').then(auth => {
+									const password = md5(data.password)
+									const model: Empleado = this.editarPerfilForm.value
 
-							this.storage.get('auth').then(auth => {
-								const password = md5(data.password)
-								const model = this.editarPerfilForm
+									if (model.password) {
+										const control = <FormControl>this.editarPerfilForm.controls['password']
+										control.setValue(md5(model.password))
+									}
 
-								if (!isNaN(model.value.password)) {
-									const control = <FormControl>this.editarPerfilForm.controls['password']
-									control.setValue(md5(model.value.password))
-								}
-
-								this.perfilProvider.updateEmpleado(this.perfil.id, auth.token, model.value, password).subscribe(res => {
-									this.events.publish('empleado:updated', Date.now())
-									this.presentToast('Perfil actualizado satisfactoriamente')
-									this.navCtrl.setRoot(HomePage)
-								}, err => {
-									loading.dismiss()
-									this.navCtrl.setRoot(HomePage)									
-									console.log('ERROR', err)
-									this.presentToast('Ha ocurrido un error inesperado')
-								}, () => loading.dismiss())
+									this.perfilProvider.updateEmpleado(this.perfil.id, auth.token, model, auth.email, password).subscribe(res => {
+										console.log(res)
+										this.events.publish('empleado:updated', Date.now())
+										this.presentToast('Perfil actualizado satisfactoriamente')
+										this.navCtrl.setRoot(HomePage)
+									}, err => {
+										loading.dismiss()
+										this.presentToast(JSON.parse(err._body).error ? JSON.parse(err._body).error.message : 'Ha ocurrido un error inesperado')
+									}, () => loading.dismiss())
+								})
 							})
 						}
 					}
@@ -100,10 +110,6 @@ export class PerfilPage implements OnInit {
 		} else {
 			this.presentToast('Complete todos los campos de manera correcta')
 		}
-	}
-
-	private updateHandler (data: any) {
-			
 	}
 								
 	ngOnInit () {
@@ -190,12 +196,12 @@ export class PerfilPage implements OnInit {
     })
   }
 
-  private addToTelefonos () {
+  addToTelefonos () {
     const control = <FormArray>this.editarPerfilForm.controls['telefonos']
     control.push(this.initTelefono())
 	}
 	
-	private removeFromTelefonos (i: number) {
+	removeFromTelefonos (i: number) {
     let alert = this.alertCtrl.create({
       title: `¿Desea eliminar este número de teléfono?`,
       message: 'Una vez eliminado, este no podrá ser recuperado',
@@ -242,7 +248,7 @@ export class PerfilPage implements OnInit {
     toast.present()
 	}
 	
-	private abrirGaleria () {
+	abrirGaleria () {
 		this.platform.ready().then(() => {
 			let cameraOptions: CameraOptions = {
 				sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
@@ -275,7 +281,7 @@ export class PerfilPage implements OnInit {
 		})
 	}
 
-	private abrirCamara () {
+	abrirCamara () {
 		this.platform.ready().then(() => {
 			let cameraOptions: CameraOptions = {
 				sourceType: this.camera.PictureSourceType.CAMERA,

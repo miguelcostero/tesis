@@ -15,6 +15,7 @@
 					<ion-label stacked>Documento de identidad</ion-label>
 					<ion-input type="text" formControlName="dni" name="dni"></ion-input>
 				</ion-item>
+				{{ editarClienteForm.controls.dni?.errors | json }}
 				<ion-item class="error-message" text-wrap [hidden]="editarClienteForm.controls.dni.valid || (editarClienteForm.controls.dni.pristine && !submitted)">
 					Ingrese un número de documento de identidad válido
         </ion-item>

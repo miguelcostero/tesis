@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http'
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular'
 import { IonicStorageModule } from '@ionic/storage'
 import { CallNumber } from '@ionic-native/call-number'
+import { CloudSettings, CloudModule } from '@ionic/cloud-angular'
 
 import { MyApp } from './app.component'
 import { HomePage } from '../pages/home/home'
@@ -61,6 +62,25 @@ import { TelefonosProvider } from '../providers/telefonos/telefonos'
 import { EmpleadosProvider } from '../providers/empleados/empleados'
 import { SeleccionarTalentoEventoComponent } from '../components/seleccionar-talento-evento/seleccionar-talento-evento'
 import { TalentosProvider } from '../providers/talentos/talentos'
+
+const cloudSettings: CloudSettings = {
+  core: {
+    app_id: '470166f4'
+  },
+  push: {
+    sender_id: '243420000366',
+    pluginConfig: {
+      ios: {
+        badge: true,
+        sound: true
+      },
+      android: {
+        iconColor: '#1976D2',
+        forceShow: true
+      }
+    }
+  }
+}
 
 @NgModule({
   declarations: [
@@ -134,7 +154,8 @@ import { TalentosProvider } from '../providers/talentos/talentos'
     }),
     IonicStorageModule.forRoot({
       name: '__tp'
-    })
+    }),
+    CloudModule.forRoot(cloudSettings)
   ],
   bootstrap: [IonicApp],
   entryComponents: [

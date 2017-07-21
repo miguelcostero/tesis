@@ -9,6 +9,7 @@ import { ClientesProvider } from '../../providers/clientes/clientes'
 import { TelefonosProvider } from '../../providers/telefonos/telefonos'
 
 import { NumberValidator } from '../../validators/number/number'
+import { DniValidator } from '../../validators/dni/dni'
 
 import * as countries from '../../enviroment/countries'
 
@@ -42,17 +43,20 @@ export class EditarClientePage implements OnInit {
       this.submitted = true
       const model: Cliente = this.editarClienteForm.value
 
-      this.storage.get('auth').then(auth => {
-        this._clientes.updateCliente(model, auth.token).subscribe(res => {
-          this._events.publish('cliente:updated', model.id, Date.now())
-          this.presentToast(`Cliente ${model.id} ha sido actualizado satisfactoriamente`)
-          this.navCtrl.pop()
-        }, err => {
-          this.presentToast('Ha ocurrido un error inesperado, porfavor intente de nuevo más tarde')
-          console.error('ERROR', err)
+      this.createLoader()
+      this.loading.present().then(() => {
+        this.storage.get('auth').then(auth => {
+          this._clientes.updateCliente(model, auth.token).subscribe(res => {
+            this._events.publish('cliente:updated', model.id, Date.now())
+            this.presentToast(`Cliente ${model.id} ha sido actualizado satisfactoriamente`)
+            this.navCtrl.pop()
+          }, err => {
+            this.loading.dismiss()
+            this.presentToast('Ha ocurrido un error inesperado, porfavor intente de nuevo más tarde')
+            console.error('ERROR', err)
+          }, () => this.loading.dismiss())
         })
       })
-
     } else {
       this.presentToast('Porfavor complete todos los campos de manera correcta')
     }
@@ -76,8 +80,7 @@ export class EditarClientePage implements OnInit {
       ]],
       dni: ['', [
         <any>Validators.required,
-        <any>Validators.minLength(10),
-        <any>Validators.maxLength(20)
+        <any>DniValidator.isValid
       ]],
       direccion: ['', [
         <any>Validators.required,
@@ -123,15 +126,19 @@ export class EditarClientePage implements OnInit {
           handler: () => {
 						const telefono = this.editarClienteForm.value.telefonos[i]
 						if (!isNaN(telefono.id) && telefono.id !== null) {
-              this.storage.get('auth').then(auth => {
-                this.telefonosProvider.deteleTelefono(telefono.id, auth.token, 'cliente').subscribe(res => {
-                  const control = <FormArray>this.editarClienteForm.controls['telefonos']
-                  control.removeAt(i)
-                  this.presentToast(`Número de teléfono ${telefono.id} ha sido eliminado satisfactoriamente`)
-                  this._events.publish('cliente:updated', this.editarClienteForm.value.id, Date.now())
-                }, err => {
-                  console.log('ERROR', err)
-                  this.presentToast('No se ha podido eliminar su numero de teléfono')
+              this.createLoader()
+              this.loading.present().then(() => {
+                this.storage.get('auth').then(auth => {
+                  this.telefonosProvider.deteleTelefono(telefono.id, auth.token, 'cliente').subscribe(res => {
+                    const control = <FormArray>this.editarClienteForm.controls['telefonos']
+                    control.removeAt(i)
+                    this.presentToast(`Número de teléfono ${telefono.id} ha sido eliminado satisfactoriamente`)
+                    this._events.publish('cliente:updated', this.editarClienteForm.value.id, Date.now())
+                  }, err => {
+                    this.loading.dismiss()
+                    console.log('ERROR', err)
+                    this.presentToast('No se ha podido eliminar su numero de teléfono')
+                  }, () => this.loading.dismiss())
                 })
               })
 						} else {

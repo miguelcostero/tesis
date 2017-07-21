@@ -13,6 +13,7 @@ import { TelefonosProvider } from '../../providers/telefonos/telefonos'
 
 import { FechaNacimientoValidator } from '../../validators/fecha_nacimiento/fecha_nacimiento'
 import { NumberValidator } from '../../validators/number/number'
+import { TextValidator } from '../../validators/text/text'
 
 import * as countries from '../../enviroment/countries'
 
@@ -100,12 +101,14 @@ export class EditarEmpleadoPage {
 			nombre: ['', [
 				<any>Validators.required,
 				<any>Validators.minLength(3),
-				<any>Validators.maxLength(50)
+				<any>Validators.maxLength(50),
+				<any>TextValidator.isValid
 			]],
 			apellido: ['', [
 				<any>Validators.required,
 				<any>Validators.minLength(3),
-				<any>Validators.maxLength(60)
+				<any>Validators.maxLength(60),
+				<any>TextValidator.isValid
 			]],
 			fecha_nacimiento: [this.maxAge, [
 				<any>Validators.required,
